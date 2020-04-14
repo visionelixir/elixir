@@ -1,0 +1,4 @@
+dist/*
+src/**/*.test.*
+/src/test/*
+/src/**/__tests__/**/*
