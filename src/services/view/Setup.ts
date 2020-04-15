@@ -9,7 +9,7 @@ import * as path from 'path'
 import * as nunjucks from 'nunjucks'
 import { ElixirView } from './View'
 
-export default class LoggerSetup {
+export default class ViewSetup {
   run(vision: Vision): void {
     const viewConfig: ViewConfig = AssetLoader
       .loadConfig<ViewConfig>(

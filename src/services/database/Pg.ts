@@ -43,7 +43,7 @@ export class Pg {
     return this
   }
 
-  public async queryMany(
+  public async query(
     query: string,
     params?: Array<string | number>,
   ): Promise<KeyValue[]> {
@@ -63,7 +63,7 @@ export class Pg {
         return record
       })
 
-      EventDispatcher.emit(
+      await EventDispatcher.emit(
         ElixirEvents.APP_DATA,
         new ElixirEvent({
           collection: 'queries',
@@ -83,11 +83,11 @@ export class Pg {
     }
   }
 
-  public async query(
+  public async queryOne(
     query: string,
     params?: Array<string | number>,
   ): Promise<KeyValue | null> {
-    const result = await this.queryMany(query, params)
+    const result = await this.query(query, params)
 
     return result[0] || null
   }

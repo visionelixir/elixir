@@ -10,7 +10,7 @@ import {
   VisionElixirEnvironment,
 } from '../..'
 
-export default class LoggerSetup {
+export default class DatabaseSetup {
   run(vision: Vision): void {
     const databaseConfig: DatabaseConfig = AssetLoader
       .loadConfig<DatabaseConfig>(
