@@ -1,4 +1,4 @@
-import { Middleware, RouterFacade as Router } from '../../..'
+import { Middleware, RouterFacade as Router } from '../..'
 
 export class RouterMiddleware {
   public static attachRoutes(): Middleware {
