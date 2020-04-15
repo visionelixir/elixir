@@ -1,7 +1,7 @@
-import { CollectorFacade } from './facades'
-import { ElixirFacade } from '../../index'
+import { CollectorFacade } from '../facades'
+import { ElixirFacade } from '../../..'
 
-jest.mock('../..', () => ({
+jest.mock('../../..', () => ({
   ElixirFacade: jest.fn()
 }))
 

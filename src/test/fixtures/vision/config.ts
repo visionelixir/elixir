@@ -9,11 +9,13 @@ export const TEST_VISION_CONFIG: VisionConfig = {
 
   environment: Environment.DEVELOPMENT,
 
-  // debug: true,
+  debug: true,
 
-  // timezone: 'utc',
+  timezone: 'utc',
 
-  // encryptionKey: 'abcd',
+  encryptionKey: 'abcd',
+
+  configDirectory: 'config',
 
   baseDirectory: path.normalize(`${__dirname}`),
 
@@ -25,69 +27,5 @@ export const TEST_VISION_CONFIG: VisionConfig = {
     require: [
       'core'
     ]
-  },
-  //
-  // views: {
-  //   serviceViewDirectory: 'views',
-  //   themesDirectory: 'themes',
-  //   themeFallback: [
-  //     'mySite',
-  //     'base'
-  //   ],
-  // },
-  //
-  // errorHandler: async () => {  },
-  //
-  // database: {
-  //   connections: {
-  //
-  //     _default: {
-  //       type: EDatabaseConnectionTypes.PG,
-  //       host: 'localhost',
-  //       database: 'cadence',
-  //       user: 'postgres',
-  //       password: 'postgres',
-  //       port: 5433,
-  //     }
-  //
-  //   }
-  //
-  // }
+  }
 }
-//
-// export const appTestConfigNoDatabase: AppConfig = {
-//   name: 'Test App',
-//
-//   host: 'localhost',
-//   port: NumberUtil.getRandomInt(3001, 4000),
-//
-//   environment: Environment.DEVELOPMENT,
-//
-//   debug: true,
-//
-//   timezone: 'utc',
-//
-//   encryptionKey: 'abcd',
-//
-//   baseDir: path.normalize(`${__dirname}`),
-//
-//   services: {
-//     eventFile: 'events',
-//     routeFile: 'routes',
-//     directory: 'services',
-//     require: [
-//       'core'
-//     ]
-//   },
-//
-//   views: {
-//     serviceViewDirectory: 'views',
-//     themesDirectory: 'themes',
-//     themeFallback: [
-//       'mySite',
-//       'base'
-//     ],
-//   },
-//
-//   errorHandler: async () => {  },
-// }

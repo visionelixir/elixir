@@ -1,6 +1,6 @@
-import CollectorSetup from './Setup'
+import CollectorSetup from '../Setup'
 
-jest.mock('../..', () => ({
+jest.mock('../../..', () => ({
   Vision: {} as any,
   ElixirCollector: class {} as any
 }))

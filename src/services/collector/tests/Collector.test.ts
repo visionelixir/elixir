@@ -1,4 +1,4 @@
-import { ElixirCollector } from './Collector'
+import { ElixirCollector } from '../Collector'
 
 describe('Elixir Collector', () => {
   it ('should instantiate', async () => {

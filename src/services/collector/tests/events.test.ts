@@ -1,17 +1,17 @@
-import { appDataHandler, responsePostHandler, responsePreHandler } from './events'
-import { CollectorFacade } from './facades'
-import { EventDispatcherFacade } from '../events/facades'
-import { LoggerFacade } from '../logger/facades'
-import { ElixirEvent, ElixirEvents } from '../..'
+import { appDataHandler, responsePostHandler, responsePreHandler } from '../events'
+import { CollectorFacade } from '../facades'
+import { EventDispatcherFacade } from '../../events/facades'
+import { LoggerFacade } from '../../logger/facades'
+import { ElixirEvent, ElixirEvents } from '../../..'
 
 const ctx = {
   request: { method: 'GET', url: '/' },
   response: { status: 200 }
 }
 
-jest.mock('./facades', require('./__mocks__/facades').CollectorFacadeMock)
-jest.mock('../events/facades', require('../events/__mocks__/facades').EventDispatcherFacadeMock)
-jest.mock('../logger/facades', require('../logger/__mocks__/facades').LoggerFacadeMock)
+jest.mock('../facades', require('../mocks/facades').CollectorFacadeMock)
+jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
+jest.mock('../../logger/facades', require('../../logger/mocks/facades').LoggerFacadeMock)
 
 afterEach(jest.resetAllMocks)
 

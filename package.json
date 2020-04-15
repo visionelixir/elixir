@@ -61,7 +61,8 @@
     "collectCoverage": true,
     "collectCoverageFrom": [
       "./**/*.{ts,js}",
-      "!./**/test/**/*",
+      "!./**/tests/**/*",
+      "!./**/mocks/**/*",
       "!./**/__tests__/**/*",
       "!./**/__mocks__/**/*"
     ],
