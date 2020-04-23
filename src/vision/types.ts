@@ -5,7 +5,7 @@ export { Middleware, Next, Context } from 'koa'
 
 export type AsyncVoid = Promise<void>
 
-export enum Environment {
+export enum AppEnvironment {
   DEVELOPMENT = 'development',
   STAGING = 'staging',
   PRODUCTION = 'production',
@@ -47,8 +47,8 @@ export interface ElixirConfig {
 }
 
 export interface VisionConfig {
-  environment: Environment
-  port: number
+  environment: AppEnvironment
+  port: number | string
   name: string
   host: string
   debug: boolean

@@ -12,6 +12,7 @@ import {
 
 export default class DatabaseSetup {
   run(vision: Vision): void {
+    // prettier-ignore
     const databaseConfig: DatabaseConfig = AssetLoader
       .loadConfig<DatabaseConfig>(
         VisionElixirEnvironment.VISION,

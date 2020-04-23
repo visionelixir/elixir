@@ -1,5 +1,6 @@
 import { Class, ContainerService, ContainerTypes, Container } from './types'
 import { ContainerManager } from './ContainerManager'
+import { ContainerError } from './ContainerError'
 
 export class ElixirContainer implements Container {
   protected name: string
@@ -36,10 +37,12 @@ export class ElixirContainer implements Container {
     type: ContainerTypes,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     object: any,
-    force: boolean,
+    force = false,
   ): ElixirContainer {
     if (this.services[name] && !force) {
-      throw new Error(`Service with name ${name} already registered`)
+      throw new ContainerError(`Service with name ${name} already registered`, {
+        name,
+      })
     }
 
     this.services[name] = {
@@ -64,7 +67,7 @@ export class ElixirContainer implements Container {
 
   public getService(name: string): ContainerService {
     if (!this.services[name]) {
-      throw new Error(`Service with name ${name} not found`)
+      throw new ContainerError(`Service with name ${name} not found`, { name })
     }
 
     return this.services[name]

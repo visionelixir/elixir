@@ -9,7 +9,6 @@ EventDispatcher.on(ElixirEvents.INIT_MIDDLEWARE, async (event: ElixirEvent) => {
   middlewareStack.push(RouterMiddleware.allowedMethods())
 })
 
-
 //@todo is this still needed?
 EventDispatcher.on(
   ElixirEvents.INIT_SERVICE_SETUP_POST,

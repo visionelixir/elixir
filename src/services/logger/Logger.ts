@@ -1,5 +1,5 @@
 import * as chalk from 'chalk'
-import { ETypeColors, Logger, AssetLoader } from '../..'
+import { ETypeColors, Logger } from '../..'
 
 export class ElixirLogger implements Logger {
   protected pad = true
@@ -44,9 +44,6 @@ export class ElixirLogger implements Logger {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected log(color: string, ...messages: any[]): void {
-    const visionConfig = AssetLoader.getVisionConfig()
-    if (!visionConfig.debug) return
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const print: any = []
 

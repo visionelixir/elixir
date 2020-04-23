@@ -17,6 +17,7 @@ export class ElixirEvent implements Event {
     return this
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public setData(data: any): ElixirEvent {
     this.data = data
 

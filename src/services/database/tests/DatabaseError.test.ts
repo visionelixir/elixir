@@ -1,16 +1,16 @@
-import { ElixirError } from './ElixirError'
+import { DatabaseError } from '../DatabaseError'
 
-describe('Elixir Error', () => {
+describe('Database Error', () => {
   it ('it should be able to be thrown', async () => {
     try {
-      throw new ElixirError()
+      throw new DatabaseError()
     } catch (error) {
-      expect(error).toBeInstanceOf(ElixirError)
+      expect(error).toBeInstanceOf(DatabaseError)
     }
   })
 
   it ('should return the correct type', async () => {
-    const error = new ElixirError()
+    const error = new DatabaseError()
 
     try {
       throw error
@@ -20,7 +20,7 @@ describe('Elixir Error', () => {
   })
 
   it ('should return the correct name', async () => {
-    const error = new ElixirError()
+    const error = new DatabaseError()
 
     try {
       throw error

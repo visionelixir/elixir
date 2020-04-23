@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { Environment, VisionConfig } from '../../..'
+import { AppEnvironment, VisionConfig } from '../../..'
 
 export const TEST_VISION_CONFIG: VisionConfig = {
   name: 'Test Vision',
@@ -7,7 +7,7 @@ export const TEST_VISION_CONFIG: VisionConfig = {
   host: 'localhost',
   port: 3001,
 
-  environment: Environment.DEVELOPMENT,
+  environment: AppEnvironment.DEVELOPMENT,
 
   debug: true,
 

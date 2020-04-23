@@ -1,5 +1,3 @@
-// tslint:disable:no-expression-statement
-
 import { PayloadError } from './PayloadError'
 
 describe('Payload Error', () => {

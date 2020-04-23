@@ -11,6 +11,7 @@ import { ElixirView } from './View'
 
 export default class ViewSetup {
   run(vision: Vision): void {
+    // prettier-ignore
     const viewConfig: ViewConfig = AssetLoader
       .loadConfig<ViewConfig>(
         VisionElixirEnvironment.VISION,

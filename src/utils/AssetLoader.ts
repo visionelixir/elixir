@@ -107,6 +107,7 @@ export class AssetLoader {
   public static loadServiceSetupFile(
     environment: VisionElixirEnvironment,
     service: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): any {
     const config = this.getConfig(environment)
     const file = config.services.setupFile
@@ -119,6 +120,7 @@ export class AssetLoader {
     service: string,
     file: string,
     moduleExportedDefault = false,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): any {
     const config = this.getConfig(environment)
     const baseDirectory = config.baseDirectory
@@ -150,6 +152,7 @@ export class AssetLoader {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public static loadAsset(file: string, moduleDefault = false): any {
     if (moduleDefault) {
       return require(file).default
