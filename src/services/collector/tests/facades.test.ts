@@ -5,7 +5,7 @@ jest.mock('../../..', () => ({
   ElixirFacade: jest.fn()
 }))
 
-describe('Elixir Collector Facade', () => {
+describe('Collector Facade', () => {
   it ('should return the facade', async () => {
     expect(CollectorFacade).toBeInstanceOf(ElixirFacade)
     expect(ElixirFacade).toBeCalledWith('Collector')

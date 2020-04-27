@@ -1,13 +1,10 @@
 import { Pool } from 'pg'
 import * as _ from 'lodash'
-import {
-  DatabaseConnectionConfig,
-  EventDispatcherFacade as EventDispatcher,
-  KeyValue,
-  DatabaseError,
-  ElixirEvent,
-  ElixirEvents,
-} from '../..'
+import { DatabaseConnectionConfig } from './types'
+import { EventDispatcherFacade as EventDispatcher } from '../events/facades'
+import { KeyValue, ElixirEvents } from '../../vision/types'
+import { DatabaseError } from './DatabaseError'
+import { ElixirEvent } from '../events/Event'
 
 export class Pg {
   protected pool: Pool
@@ -62,6 +59,8 @@ export class Pg {
 
         return record
       })
+
+      debugger
 
       await EventDispatcher.emit(
         ElixirEvents.APP_DATA,
