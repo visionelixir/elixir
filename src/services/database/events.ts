@@ -1,15 +1,16 @@
-import {
-  DatabaseManagerFacade as DatabaseManager,
-  ElixirEvent,
-  ElixirEvents,
-  EventDispatcherFacade as EventManager,
-} from '../..'
+import { DatabaseManagerFacade as DatabaseManager } from './facades'
+import { EventDispatcherFacade as EventManager } from '../events/facades'
+import { ElixirEvent } from '../events/Event'
+import { ElixirEvents } from '../../vision/types'
 
-EventManager.on(ElixirEvents.INIT_VARS, async (event: ElixirEvent) => {
+export const initVarsHandler = async (event: ElixirEvent) => {
   const { ctx } = event.getData()
   const { services } = ctx.vision
+
   services.database = {
     db: DatabaseManager.get(),
     dbManager: DatabaseManager,
   }
-})
+}
+
+EventManager.on(ElixirEvents.INIT_VARS, initVarsHandler)

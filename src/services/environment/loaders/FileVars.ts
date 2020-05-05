@@ -17,7 +17,7 @@ export class FileVars {
 
     result.split('\n').map(row => {
       const [name, value] = row.split('=')
-      vars[name] = value
+      vars[name.trim()] = value.trim()
     })
 
     return vars

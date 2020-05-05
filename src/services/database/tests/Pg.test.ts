@@ -81,6 +81,22 @@ describe('Pg', () => {
     expect(result).toMatchObject({ columnOne: 'value one', columnTwo: 'value two' })
   })
 
+  it ('should return null if query one has no result', async () => {
+    mClient.query.mockImplementationOnce(async () => {
+      return {
+        rows: []
+      }
+    })
+
+    const pg = new Pg('pg', config)
+    const result = await pg.queryOne('select * from postgres', [ 1, 2, 3 ])
+
+    expect(mPool.connect).toBeCalledTimes(1)
+    expect(mClient.query).toBeCalledTimes(1)
+    expect(mClient.release).toBeCalledTimes(1)
+    expect(result).toBeNull()
+  })
+
   it ('can disconnect', async () => {
     const pg = new Pg('pg', config)
     await pg.disconnect()

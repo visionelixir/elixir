@@ -63,7 +63,7 @@ describe('Elixir Container', () => {
     expect(result2).toBe(result)
   })
 
-  it ('can result a transient service', () => {
+  it ('can resolve a transient service', () => {
     const container = new ElixirContainer()
     class MyService {
       sayHello: () => 'hello'
@@ -115,5 +115,17 @@ describe('Elixir Container', () => {
     const result2 = container.resolve(serviceName)
 
     expect(result2).toBe(service2)
+  })
+
+  it ('should force false by default calling set service', () => {
+    const container = new ElixirContainer()
+    const service = { a: 1, b: 2 }
+    const serviceName = 'myService'
+
+    container.setService(serviceName, ContainerTypes.SINGLETON, service)
+
+    expect(() => {
+      container.setService(serviceName, ContainerTypes.SINGLETON, service)
+    }).toThrowError(ContainerError)
   })
 })

@@ -14,4 +14,12 @@ describe('Elixir Container Manager', () => {
     ContainerManager.set('myContainer', {} as any)
     expect(ContainerManager.get('myContainer')).toMatchObject({})
   })
+
+  it ('should return the default container by default', () => {
+    expect(ContainerManager['containers']).toMatchObject({})
+
+    const container = {}
+    ContainerManager.set('default', container as any)
+    expect(ContainerManager.get()).toMatchObject(container)
+  })
 })
