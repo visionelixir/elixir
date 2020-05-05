@@ -1,10 +1,14 @@
-import { Vision, VisionElixirEnvironment } from '../..'
-import { ElixirEventDispatcher } from './exports'
-import { AssetLoader } from '../../utils/AssetLoader'
+import {
+  Vision,
+  VisionElixirEnvironment,
+  AssetLoader,
+  ElixirEventDispatcher,
+} from '../..'
 
 export default class EventsSetup {
   run(vision: Vision): void {
     const container = vision.getContainer()
+
     container.singleton('EventDispatcher', new ElixirEventDispatcher())
 
     this

@@ -7,8 +7,14 @@ export class ElixirEvent implements Event {
   protected name = 'event'
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(data?: any) {
-    if (data) this.setData(data)
+  constructor(data?: any, name?: string) {
+    if (data) {
+      this.setData(data)
+    }
+
+    if (name) {
+      this.setName(name)
+    }
   }
 
   public setName(name: string): ElixirEvent {
