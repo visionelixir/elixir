@@ -1,4 +1,4 @@
-import { ElixirError } from './ElixirError'
+import { ElixirError } from '../ElixirError'
 
 describe('Elixir Error', () => {
   it ('it should be able to be thrown', async () => {

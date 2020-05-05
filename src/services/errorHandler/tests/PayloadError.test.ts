@@ -1,4 +1,4 @@
-import { PayloadError } from './PayloadError'
+import { PayloadError } from '../PayloadError'
 
 describe('Payload Error', () => {
   it ('it should be able to be thrown', async () => {
