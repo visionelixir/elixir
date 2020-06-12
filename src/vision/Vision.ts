@@ -4,7 +4,6 @@ import {
   Container,
   Core,
   ElixirContainer,
-  ElixirError,
   ElixirEvent,
   ElixirEvents,
   EventDispatcherFacade as EventDispatcher,
@@ -86,10 +85,6 @@ export class Vision {
    */
   public async create(config: VisionConfig): Promise<Vision> {
     this.config = config
-
-    if (!this.getContainer()) {
-      throw new ElixirError('Container service not loaded')
-    }
 
     // load the elixir services
     this.loadServices(VisionElixirEnvironment.ELIXIR)

@@ -18,13 +18,6 @@ export class ElixirFacade {
 
         return this.containerInstance[property]
       },
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      apply: (_target: any, _thisArg: any, argumentsList: any[]): any => {
-        this.setContainerInstance()
-
-        return this.containerInstance(...argumentsList)
-      },
     })
   }
 

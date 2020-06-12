@@ -180,4 +180,17 @@ describe('Vision: Vision', () => {
 
     expect(vision.getStatus()).toEqual(false)
   })
+
+  it ('errors if there is an error when calling down', async () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
+
+    await vision.up()
+
+    const originalClose = vision['server'].close
+    vision['server'].close = jest.fn((callback: any) => callback(new Error('test error')))
+
+    await expect(vision.down()).rejects.toThrowError(Error)
+
+    vision['server'].close = originalClose
+  })
 })
