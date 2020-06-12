@@ -1,4 +1,9 @@
-import { PerformanceMarkCollection, PerformanceMark, Performance } from '../..'
+import {
+  PerformanceMarkCollection,
+  PerformanceMark,
+  Performance,
+  PerformanceError,
+} from '../..'
 
 export class ElixirPerformance implements Performance {
   protected benchmarks: PerformanceMarkCollection = {}
@@ -16,6 +21,10 @@ export class ElixirPerformance implements Performance {
   }
 
   public get = (name: string): PerformanceMark => {
+    if (!this.benchmarks[name]) {
+      throw new PerformanceError(`Benchmark '${name}' not set`)
+    }
+
     return this.benchmarks[name]
   }
 
@@ -35,7 +44,15 @@ export class ElixirPerformance implements Performance {
     return array
   }
 
-  public clear = (): ElixirPerformance => {
+  public clear = (name: string): ElixirPerformance => {
+    this.get(name).stop()
+    delete this.benchmarks[name]
+
+    return this
+  }
+
+  public clearAll = (): ElixirPerformance => {
+    this.allArray().map(mark => mark.stop())
     this.benchmarks = {}
 
     return this

@@ -53,9 +53,7 @@ export class AppMiddleware {
 
   public static compress(): Middleware {
     const compress = compressMiddleware({
-      filter: function(contentType) {
-        return /text/i.test(contentType)
-      },
+      filter: this.filter,
       threshold: 0,
       flush: zlib.constants.Z_SYNC_FLUSH,
     })
@@ -63,6 +61,10 @@ export class AppMiddleware {
     Object.defineProperty(compress, 'name', { value: 'compress' })
 
     return compress
+  }
+
+  protected static filter(contentType: string): boolean {
+    return /text/i.test(contentType)
   }
 
   public static response(): Middleware {

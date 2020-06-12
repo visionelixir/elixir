@@ -11,5 +11,4 @@ export interface View {
     template: string,
     payload?: KeyValue | undefined,
   ): Promise<string | null>
-  resolveView(view: string): string
 }

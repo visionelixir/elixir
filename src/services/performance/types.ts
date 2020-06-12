@@ -10,5 +10,6 @@ export interface Performance {
   get(name: string): PerformanceMark
   all(): PerformanceMarkCollection
   allArray(): PerformanceMark[]
-  clear(): Performance
+  clear(name?: string): Performance
+  clearAll(): Performance
 }

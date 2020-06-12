@@ -1,4 +1,4 @@
-import { dashCase } from './dashCase'
+import { snakeCase } from '../../../..'
 
 const environment = {
   filters: {},
@@ -11,30 +11,30 @@ environment.addFilter.mockImplementation((name: string, callback: any): void => 
 
 beforeEach(jest.clearAllMocks)
 
-describe('utils:nunjucks:filters:dashCase', () => {
+describe('utils:nunjucks:filters:snakeCase', () => {
 
-  it('should dashcase strings', () => {
+  it('should snakecase strings', () => {
     const tests = [
       'hello',
       'hello my friend',
       'helloMyFriend',
       'HELLOMyFRIEND',
       'Hello my-friend',
-      'Hello_my_Friend',
+      'Hello_my_Friend'
     ]
 
     const expected = [
       'hello',
-      'hello-my-friend',
-      'hello-my-friend',
-      'hello-my-friend',
-      'hello-my-friend',
-      'hello-my-friend',
+      'hello_my_friend',
+      'hello_my_friend',
+      'hello_my_friend',
+      'hello_my_friend',
+      'hello_my_friend',
     ]
 
     const results = tests.map(test => {
-      dashCase(environment)
-      return environment.filters['dashCase'](test)
+      snakeCase(environment)
+      return environment.filters['snakeCase'](test)
     })
 
     expect(results).toEqual(expected)

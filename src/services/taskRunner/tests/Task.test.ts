@@ -1,5 +1,5 @@
-import { Task } from './Task'
-import { Next } from '../../..'
+import { Task } from '../Task'
+import { Next } from '../../../..'
 
 const called = jest.fn()
 

@@ -25,7 +25,7 @@ export class ElixirEventDispatcher implements EventDispatcher {
       this.events[event].splice(index, 1)
     }
 
-    if (this.getCallbacks(event).length === 0) {
+    if (!this.getCallbacks(event).length) {
       delete this.events[event]
     }
 

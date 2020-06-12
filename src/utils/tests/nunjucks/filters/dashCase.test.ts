@@ -1,4 +1,4 @@
-import { titleCase } from './titleCase'
+import { dashCase } from '../../../..'
 
 const environment = {
   filters: {},
@@ -11,9 +11,9 @@ environment.addFilter.mockImplementation((name: string, callback: any): void => 
 
 beforeEach(jest.clearAllMocks)
 
-describe('utils:nunjucks:filters:titleCase', () => {
+describe('utils:nunjucks:filters:dashCase', () => {
 
-  it('should titlecase strings', () => {
+  it('should dashcase strings', () => {
     const tests = [
       'hello',
       'hello my friend',
@@ -24,17 +24,17 @@ describe('utils:nunjucks:filters:titleCase', () => {
     ]
 
     const expected = [
-      'Hello',
-      'HelloMyFriend',
-      'HelloMyFriend',
-      'HelloMyFriend',
-      'HelloMyFriend',
-      'HelloMyFriend',
+      'hello',
+      'hello-my-friend',
+      'hello-my-friend',
+      'hello-my-friend',
+      'hello-my-friend',
+      'hello-my-friend',
     ]
 
     const results = tests.map(test => {
-      titleCase(environment)
-      return environment.filters['titleCase'](test)
+      dashCase(environment)
+      return environment.filters['dashCase'](test)
     })
 
     expect(results).toEqual(expected)

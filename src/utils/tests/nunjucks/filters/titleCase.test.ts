@@ -1,4 +1,4 @@
-import { camelCase } from './camelCase'
+import { titleCase } from '../../../..'
 
 const environment = {
   filters: {},
@@ -11,30 +11,30 @@ environment.addFilter.mockImplementation((name: string, callback: any): void => 
 
 beforeEach(jest.clearAllMocks)
 
-describe('utils:nunjucks:filters:camelCase', () => {
+describe('utils:nunjucks:filters:titleCase', () => {
 
-  it('should camelcase strings', () => {
+  it('should titlecase strings', () => {
     const tests = [
       'hello',
       'hello my friend',
-      'hello-my-friend',
-      'HELLO-MY-FRIEND',
+      'helloMyFriend',
+      'HELLOMyFRIEND',
       'Hello my-friend',
       'Hello_my_Friend',
     ]
 
     const expected = [
-      'hello',
-      'helloMyFriend',
-      'helloMyFriend',
-      'helloMyFriend',
-      'helloMyFriend',
-      'helloMyFriend',
+      'Hello',
+      'HelloMyFriend',
+      'HelloMyFriend',
+      'HelloMyFriend',
+      'HelloMyFriend',
+      'HelloMyFriend',
     ]
 
     const results = tests.map(test => {
-      camelCase(environment)
-      return environment.filters['camelCase'](test)
+      titleCase(environment)
+      return environment.filters['titleCase'](test)
     })
 
     expect(results).toEqual(expected)

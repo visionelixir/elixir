@@ -3,10 +3,11 @@ import { PerformanceError } from './PerformanceError'
 
 export class PerformanceMark {
   protected name: string
-  protected running: boolean
+  protected running = false
   protected startValue: number
   protected endValue: number
-  protected duration: number
+  protected duration = 0
+  protected count = 0
 
   constructor(name: string) {
     this.name = name
@@ -21,6 +22,12 @@ export class PerformanceMark {
   }
 
   public start(): PerformanceMark {
+    if (this.isRunning()) {
+      throw new PerformanceError(
+        `Measurement '${this.getName()}' already running`,
+      )
+    }
+
     this.running = true
     this.startValue = performance.now()
 
@@ -28,19 +35,41 @@ export class PerformanceMark {
   }
 
   public stop(): number {
+    if (!this.isRunning()) {
+      throw new PerformanceError(`Measurement '${this.getName()}' not running`)
+    }
+
     this.running = false
     this.endValue = performance.now()
+    this.count++
 
-    this.duration = this.endValue - this.startValue
+    this.duration += this.endValue - this.startValue
 
     return this.getDuration()
   }
 
   public getDuration(): number {
-    if (this.duration === undefined) {
-      throw new PerformanceError('Measurement still running')
+    if (this.isRunning()) {
+      throw new PerformanceError(
+        `Measurement '${this.getName()}' still running`,
+      )
     }
 
     return this.duration
+  }
+
+  public reset(): PerformanceMark {
+    if (this.isRunning()) {
+      this.stop()
+    }
+
+    this.duration = 0
+    this.count = 0
+
+    return this
+  }
+
+  public getCount(): number {
+    return this.count
   }
 }

@@ -10,13 +10,15 @@ export class ElixirView implements View {
     payload?: KeyValue | undefined,
   ): Promise<string | null> {
     return new Promise((resolve, reject) => {
+      template = this.resolveView(template)
+
       if (!template.endsWith(ElixirView.EXTENSION)) {
         template = `${template}.${ElixirView.EXTENSION}`
       }
 
       nunjucks.render(template, payload, (error, result) => {
         if (error) {
-          reject(new ViewError('Failed to render view', error, 'renderError'))
+          reject(new ViewError(error.message, error, 'renderError'))
         }
 
         resolve(result)
@@ -24,7 +26,9 @@ export class ElixirView implements View {
     })
   }
 
-  public resolveView(view: string): string {
-    return path.normalize(`${view}.${ElixirView.EXTENSION}`)
+  protected resolveView(view: string): string {
+    const normalised = path.normalize(view)
+
+    return normalised
   }
 }

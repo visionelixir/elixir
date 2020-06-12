@@ -1,21 +1,11 @@
-import * as events from 'events'
-import {
-  KeyValue,
-  LoggerFacade as Logger,
-  TaskRunnerOptions,
-  Next,
-  TaskMiddleware,
-} from '../..'
+import { KeyValue, LoggerFacade as Logger, Next, TaskMiddleware } from '../..'
 
-export class TaskRunner extends events.EventEmitter {
+export class TaskRunner {
   protected env: string
   protected middleware: TaskMiddleware[]
   protected context: KeyValue
 
-  constructor(options?: TaskRunnerOptions) {
-    super()
-    options = options || {}
-    this.env = options.env || process.env.NODE_ENV || 'development'
+  constructor() {
     this.middleware = []
     this.context = {}
   }
@@ -29,52 +19,35 @@ export class TaskRunner extends events.EventEmitter {
     return this
   }
 
-  public run(): void {
+  public async run(): Promise<void> {
     const fn = this.compose(this.middleware)
+    const ctx = {}
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    fn({}, async () => {}).catch((error: Error) => {
+    await fn(ctx).catch((error: Error) => {
       Logger.error(error)
     })
   }
 
   protected compose(
     middleware: TaskMiddleware[],
-  ): (context: KeyValue, next: Next) => Promise<void> {
-    if (!Array.isArray(middleware))
-      throw new TypeError('Middleware stack must be an array!')
-    for (const fn of middleware) {
-      if (typeof fn !== 'function')
-        throw new TypeError('Middleware must be composed of functions!')
-    }
-
-    return function(context: KeyValue, next: Next): Promise<void> {
-      // last called middleware #
+  ): (context: KeyValue) => Promise<void> {
+    return (context: KeyValue): Promise<void> => {
       let index = -1
 
       function dispatch(i: number): Promise<void> {
-        if (i <= index)
+        if (i <= index) {
           return Promise.reject(new Error('next() called multiple times'))
+        }
 
         index = i
 
-        let fn = middleware[i]
-        const emptyMiddleware = async (
-          _ctx: KeyValue,
-          next: Next,
-        ): Promise<void> => {
-          await next()
+        const fn = middleware[i]
+
+        if (!fn) {
+          return Promise.resolve()
         }
 
-        if (i === middleware.length) fn = next || emptyMiddleware
-
-        if (!fn) return Promise.resolve()
-
-        try {
-          return Promise.resolve(fn(context, dispatch.bind(null, i + 1)))
-        } catch (err) {
-          return Promise.reject(err)
-        }
+        return Promise.resolve(fn(context, dispatch.bind(null, i + 1)))
       }
 
       return dispatch(0)

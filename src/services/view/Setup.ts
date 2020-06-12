@@ -23,14 +23,17 @@ export default class ViewSetup {
     this.registerContainer(vision)
 
     if (viewConfig) {
-      this.setup(visionConfig, viewConfig)
+      const viewFallback = this.getViewFallback(visionConfig, viewConfig)
+      this.configureNunjucks(viewFallback)
     }
   }
 
-  public setup(config: VisionConfig, viewConfig: ViewConfig): void {
+  public getViewFallback(
+    config: VisionConfig,
+    viewConfig: ViewConfig,
+  ): string[] {
     const themePath = `${config.baseDirectory}/${viewConfig.themesDirectory}`
     const themeDirectory = path.normalize(themePath)
-    const testViewFolder = path.normalize(__dirname + '../../../test/views')
 
     let viewFallback = viewConfig.themeFallback.map((theme: string) => {
       return themeDirectory + '/' + theme
@@ -45,8 +48,11 @@ export default class ViewSetup {
     )
 
     viewFallback = viewFallback.concat(serviceViewFolders)
-    viewFallback.push(testViewFolder)
 
+    return viewFallback
+  }
+
+  public configureNunjucks(viewFallback: string[]): void {
     nunjucks.configure(viewFallback, {
       autoescape: true,
     })

@@ -45,7 +45,7 @@ export class AssetLoader {
       `${baseDirectory}/${configDirectory}/${name}`,
     )
 
-    return this.loadAsset(configPath).default
+    return this.loadAsset(configPath, true)
   }
 
   public static loadAllServiceEvents(
@@ -65,7 +65,7 @@ export class AssetLoader {
     const config = this.getConfig(environment)
     const file = config.services.eventFile
 
-    this.requireServiceAsset(environment, service, file)
+    this.runServiceAsset(environment, service, file)
   }
 
   public static loadAllServiceRoutes(
@@ -85,7 +85,7 @@ export class AssetLoader {
     const config = this.getConfig(environment)
     const file = config.services.routeFile
 
-    this.requireServiceAsset(environment, service, file)
+    this.runServiceAsset(environment, service, file)
   }
 
   public static runAllServiceSetupFiles(
@@ -95,12 +95,23 @@ export class AssetLoader {
     const vision = VisionFacade
 
     services.map((service: string) => {
-      const SetupClass = this.loadServiceSetupFile(environment, service)
+      let SetupClass = null
+
+      try {
+        SetupClass = this.loadServiceSetupFile(environment, service)
+      } catch (_e) {
+        // if no file exists just skip the module
+        return false
+      }
 
       if (SetupClass) {
         const setup = new SetupClass()
         setup.run(vision)
+      } else {
+        throw new Error('No exported setup class found')
       }
+
+      return true
     })
   }
 
@@ -122,46 +133,50 @@ export class AssetLoader {
     moduleExportedDefault = false,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): any {
-    const config = this.getConfig(environment)
-    const baseDirectory = config.baseDirectory
-    const serviceDirectory = config.services.directory
-    const serviceFile = `${baseDirectory}/${serviceDirectory}/${service}/${file}`
+    const serviceFile = this.getServiceFilePath(environment, service, file)
 
-    try {
-      return this.loadAsset(serviceFile, moduleExportedDefault)
-    } catch (error) {
-      // do nothing as it's ok if a service doesn't have a setup file
-      return null
-    }
+    return this.loadAsset(serviceFile, moduleExportedDefault)
   }
 
-  public static requireServiceAsset(
+  public static runServiceAsset(
     environment: VisionElixirEnvironment,
     service: string,
     file: string,
   ): void {
+    const serviceFile = this.getServiceFilePath(environment, service, file)
+    this.runAsset(serviceFile)
+  }
+
+  protected static getServiceFilePath(
+    environment: VisionElixirEnvironment,
+    service: string,
+    file: string,
+  ): string {
     const config = this.getConfig(environment)
     const baseDirectory = config.baseDirectory
     const serviceDirectory = config.services.directory
     const serviceFile = `${baseDirectory}/${serviceDirectory}/${service}/${file}`
 
-    try {
-      this.requireAsset(serviceFile)
-    } catch (error) {
-      // do nothing as it's ok if a service doesn't have a setup file
-    }
+    return serviceFile
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public static loadAsset(file: string, moduleDefault = false): any {
+    const result = this.require(file)
+
     if (moduleDefault) {
-      return require(file).default
+      return result.default
     }
 
-    return require(file)
+    return result
   }
 
-  public static requireAsset(file: string): void {
-    require(file)
+  public static runAsset(file: string): void {
+    this.require(file)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected static require(file: string): any {
+    return require(file)
   }
 }

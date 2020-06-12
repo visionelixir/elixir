@@ -15,6 +15,7 @@ import {
 } from '..'
 import { AppMiddleware } from './middleware'
 import { Middleware } from 'koa'
+import { VisionError } from '../services/errorHandler/VisionError'
 
 export class Vision {
   protected core: Core
@@ -30,6 +31,7 @@ export class Vision {
    */
   constructor(config?: VisionConfig) {
     this.isServed = false
+    this.core = new Core()
     this.container = new ElixirContainer()
     this.container.singleton('VisionConfig', config).singleton('Vision', this)
 
@@ -84,7 +86,6 @@ export class Vision {
    */
   public async create(config: VisionConfig): Promise<Vision> {
     this.config = config
-    this.core = new Core()
 
     if (!this.getContainer()) {
       throw new ElixirError('Container service not loaded')
@@ -172,8 +173,8 @@ export class Vision {
    */
   public async up(): Promise<Vision | false> {
     return new Promise(resolve => {
-      if (!this.config || !this.core) {
-        throw new Error('Please run create on your vision before serving')
+      if (!this.config) {
+        throw new VisionError('Please run create on your vision before serving')
       }
 
       const { port } = this.getConfig()

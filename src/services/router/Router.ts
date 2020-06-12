@@ -12,6 +12,10 @@ export class ElixirRouter implements Router {
   }
 
   public find = (path: string, method: string): Route | undefined => {
+    if (!path.startsWith('/')) {
+      path = `/${path}`
+    }
+
     return this.getRoutes().find((route: Route) => {
       return route.getMethod() === method && route.getPath() === path
     })
