@@ -11,12 +11,12 @@ export abstract class Task {
 
   protected abstract init(): void
 
-  public setMiddleware(middleware: TaskMiddleware[]): void {
+  public setMiddleware = (middleware: TaskMiddleware[]): void => {
     this.middleware = middleware
   }
 
-  public run(): void {
+  public run = (): void => {
     this.middleware.map(middleware => this.task.use(middleware))
-    this.task.run()
+    this.task.run().then()
   }
 }
