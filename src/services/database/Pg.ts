@@ -60,8 +60,6 @@ export class Pg {
         return record
       })
 
-      debugger
-
       await EventDispatcher.emit(
         ElixirEvents.APP_DATA,
         new ElixirEvent({

@@ -15,8 +15,8 @@ export abstract class Task {
     this.middleware = middleware
   }
 
-  public run = (): void => {
+  public run = async (): Promise<void> => {
     this.middleware.map(middleware => this.task.use(middleware))
-    this.task.run().then()
+    await this.task.run().then()
   }
 }

@@ -10,6 +10,11 @@ class MyTask extends Task {
         called('up')
         await next()
         called('down')
+      },
+      async (_ctx, next: Next) => {
+        called('up 2')
+        await next()
+        called('down 2')
       }
     ])
   }
@@ -28,8 +33,10 @@ describe('Task', () => {
     const myTask = new MyTask()
     await myTask.run()
 
-    expect(called).toBeCalledTimes(2)
+    expect(called).toBeCalledTimes(4)
     expect(called).nthCalledWith(1, 'up')
-    expect(called).nthCalledWith(2, 'down')
+    expect(called).nthCalledWith(2, 'up 2')
+    expect(called).nthCalledWith(3, 'down 2')
+    expect(called).nthCalledWith(4, 'down')
   })
 })
