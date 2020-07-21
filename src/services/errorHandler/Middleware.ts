@@ -3,14 +3,14 @@ import {
   Middleware,
   Next,
   AsyncVoid,
-  ElixirEvent,
   ElixirEvents,
-  LoggerFacade as Logger,
-  EventDispatcherFacade as EventDispatcher,
-  PayloadError,
-  ElixirError,
-  Vision,
-} from '../..'
+} from '../../vision/types'
+import { ElixirEvent } from '../events/Event'
+import { LoggerFacade as Logger } from '../logger/facades'
+import { EventDispatcherFacade as EventDispatcher } from '../events/facades'
+import { PayloadError } from './PayloadError'
+import { ElixirError } from './ElixirError'
+import { Vision } from '../../vision/Vision'
 
 export class ErrorHandlerMiddleware {
   public static errorHandler(): Middleware {

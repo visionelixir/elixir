@@ -1,12 +1,9 @@
-import {
-  ElixirEvent,
-  ElixirEvents,
-  EventDispatcherFacade as EventDispatcher,
-  KeyValue,
-  NumberUtil,
-  PerformanceMark,
-  PerformanceFacade as Performance,
-} from '../../..'
+import { ElixirEvent } from '../../events/Event'
+import { ElixirEvents, KeyValue } from '../../../vision/types'
+import { EventDispatcherFacade as EventDispatcher } from '../../events/facades'
+import { NumberUtil } from '../../../utils/NumberUtil'
+import { PerformanceMark } from '../PerformanceMark'
+import { PerformanceFacade as Performance } from '../facades'
 
 export const responsePost = async (event: ElixirEvent): Promise<void> => {
   const { ctx } = event.getData()

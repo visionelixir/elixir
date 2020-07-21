@@ -1,4 +1,5 @@
-import { ElixirLogger, Vision } from '../..'
+import { ElixirLogger } from './Logger'
+import { Vision } from '../../vision/Vision'
 
 export default class LoggerSetup {
   run(vision: Vision): void {

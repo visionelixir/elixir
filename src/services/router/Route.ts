@@ -1,4 +1,4 @@
-import { Middleware } from '../..'
+import { Middleware } from '../../vision/types'
 import { Route, RouterMethods } from './types'
 
 export class ElixirRoute implements Route {

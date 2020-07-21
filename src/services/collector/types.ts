@@ -1,4 +1,4 @@
-import { KeyValue } from '../..'
+import { KeyValue } from '../../vision/types'
 
 export interface Collector {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

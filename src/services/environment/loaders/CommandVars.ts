@@ -1,4 +1,4 @@
-import { KeyValue } from '../../..'
+import { KeyValue } from '../../../vision/types'
 import * as yargsParser from 'yargs-parser'
 
 export class CommandVars {

@@ -1,4 +1,4 @@
-import { KeyValue } from '../..'
+import { KeyValue } from '../../vision/types'
 import { SystemVars } from './loaders/SystemVars'
 import { CommandVars } from './loaders/CommandVars'
 import { FileVars } from './loaders/FileVars'

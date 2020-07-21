@@ -1,5 +1,4 @@
-import { ElixirFacade, Logger } from '../..'
+import { ElixirFacade } from '../../vision/Facade'
+import { Logger } from './types'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-export const LoggerFacade = new ElixirFacade('Logger') as Logger
+export const LoggerFacade = (new ElixirFacade('Logger') as unknown) as Logger

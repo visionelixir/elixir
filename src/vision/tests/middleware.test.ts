@@ -1,25 +1,16 @@
 import { AppMiddleware } from '../middleware'
 import { Vision } from '../Vision'
-import * as elixir from '../..'
-import { ElixirEvent, ElixirEvents } from '../..'
+import { ElixirEvent } from '../../services/events/Event'
+import { ElixirEvents } from '../types'
+import { EventDispatcherFacade } from '../../services/events/facades'
 
 import * as serveStaticMiddleware from 'koa-static'
 import * as compressMiddleware from 'koa-compress'
 
 jest.mock('koa-static', jest.fn(() => jest.fn(() => jest.fn())))
 jest.mock('koa-compress', jest.fn(() => jest.fn(() => jest.fn())))
-
-// @ts-ignore
-elixir['AssetLoader'] = {
-  getConfig: jest.fn(() => ({
-    name: 'myApp'
-  }))
-}
-
-// @ts-ignore
-elixir['EventDispatcherFacade'] = {
-  emit: jest.fn()
-}
+jest.mock('../../utils/AssetLoader', require('../../utils/mocks/AssetLoader').AssetLoaderMock)
+jest.mock('../../services/events/facades', require('../../services/events/mocks/facades').EventDispatcherFacadeMock)
 
 beforeEach(jest.clearAllMocks)
 
@@ -41,8 +32,8 @@ describe('Vision: middleware', () => {
       next
     )
 
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledTimes(1)
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.INIT_VARS, expect.any(ElixirEvent))
+    expect(EventDispatcherFacade.emit).toBeCalledTimes(1)
+    expect(EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.INIT_VARS, expect.any(ElixirEvent))
 
     expect(ctx).toHaveProperty('vision')
     expect(ctx.vision).toMatchObject({
@@ -83,10 +74,10 @@ describe('Vision: middleware', () => {
       vision: {}
     } as any, next)
 
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledTimes(2)
+    expect(EventDispatcherFacade.emit).toBeCalledTimes(2)
     expect(next).toBeCalledTimes(1)
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.RESPONSE_PRE, expect.any(ElixirEvent))
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.RESPONSE_POST, expect.any(ElixirEvent))
+    expect(EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.RESPONSE_PRE, expect.any(ElixirEvent))
+    expect(EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.RESPONSE_POST, expect.any(ElixirEvent))
   })
 
   it ('filters content type to text', () => {

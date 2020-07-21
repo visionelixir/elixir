@@ -3,7 +3,7 @@ import { EventDispatcherFacade as EventManager } from '../events/facades'
 import { ElixirEvent } from '../events/Event'
 import { ElixirEvents } from '../../vision/types'
 
-export const initVarsHandler = async (event: ElixirEvent) => {
+export const initVarsHandler = async (event: ElixirEvent): Promise<void> => {
   const { ctx } = event.getData()
   const { services } = ctx.vision
 

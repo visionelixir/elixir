@@ -1,35 +1,23 @@
+jest.mock('../../../utils/AssetLoader', require('../../../utils/mocks/AssetLoader').AssetLoaderMock)
+
 import ViewSetup from '../Setup'
-import * as elixir from '../../..'
-import { ElixirView, VisionElixirEnvironment } from '../../..'
 import * as nunjucks from 'nunjucks'
+import { ElixirView } from '../View'
+import { VisionElixirEnvironment } from '../../../vision/types'
+import { AssetLoader } from '../../../utils/AssetLoader'
+import { VisionMock } from '../../../vision/mocks/Vision'
 
 beforeEach(jest.clearAllMocks)
 
 const configureSpy = jest.spyOn(nunjucks, 'configure')
 
-// @ts-ignore
-elixir.AssetLoader = {
-  loadConfig: jest.fn(() => ({
-    themesDirectory: 'themes',
-    themeFallback: [ 'theme-a', 'theme-b', 'theme-c' ],
-    serviceViewDirectory: 'views'
-  } as any)),
-  getVisionConfig: jest.fn(() => ({
-    baseDirectory: 'baseDir',
-    services: {
-      directory: 'servicesDir',
-      require: [ 'service-a', 'service-b' ]
-    }
-  } as any))
-}
-
 const singletonMock = jest.fn()
 
-const visionMock = {
-  getContainer: () => ({
-    singleton: singletonMock
-  })
-} as any
+const visionMock = VisionMock().Vision as any
+visionMock.getContainer.mockImplementation(() => ({
+  singleton: singletonMock
+}))
+
 
 describe('View Service: Setup', () => {
   it ('can instantiate', () => {
@@ -49,8 +37,8 @@ describe('View Service: Setup', () => {
   it ('sorts the view fallback', () => {
     const setup = new ViewSetup()
     const viewFallback = setup.getViewFallback(
-      elixir.AssetLoader.getVisionConfig(),
-      elixir.AssetLoader.loadConfig(VisionElixirEnvironment.VISION, 'views')
+      AssetLoader.getVisionConfig(),
+      AssetLoader.loadConfig(VisionElixirEnvironment.VISION, 'views')
     )
 
     expect(viewFallback).toEqual([
@@ -80,13 +68,13 @@ describe('View Service: Setup', () => {
   })
 
   it ('only sets up nunjucks if a view config is found', () => {
+    // @ts-ignore
+    AssetLoader.loadConfig.mockImplementationOnce(() => null)
+
     const setup = new ViewSetup()
     const registerSpy = jest.spyOn(setup, 'registerContainer')
     const fallbackSpy = jest.spyOn(setup, 'getViewFallback')
     const nunjucksSpy = jest.spyOn(setup, 'configureNunjucks')
-
-    // @ts-ignore
-    elixir.AssetLoader.loadConfig = jest.fn(() => null)
 
     setup.run(visionMock)
 

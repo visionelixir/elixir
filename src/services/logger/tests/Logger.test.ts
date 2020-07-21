@@ -10,7 +10,7 @@ describe('Elixir Logger', () => {
 
   it ('should be able to log info', () => {
     const logger = new ElixirLogger()
-    const message = 'message'
+    const message: string = 'message'
 
     logger['log'] = jest.fn()
 

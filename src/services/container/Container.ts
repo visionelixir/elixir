@@ -72,4 +72,8 @@ export class ElixirContainer implements Container {
 
     return this.services[name]
   }
+
+  public has(name: string): boolean {
+    return !!this.services[name]
+  }
 }

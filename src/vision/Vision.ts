@@ -1,20 +1,21 @@
 import * as http from 'http'
 import { Server } from 'http'
+
 import {
-  Container,
   Core,
-  ElixirContainer,
-  ElixirEvent,
   ElixirEvents,
-  EventDispatcherFacade as EventDispatcher,
-  LoggerFacade as Logger,
   VisionConfig,
   VisionElixirEnvironment,
-  AssetLoader,
-} from '..'
+} from './types'
+import { Container } from '../services/container/types'
+import { ElixirContainer } from '../services/container/Container'
+import { ElixirEvent } from '../services/events/Event'
 import { AppMiddleware } from './middleware'
 import { Middleware } from 'koa'
 import { VisionError } from '../services/errorHandler/VisionError'
+import { EventDispatcherFacade as EventDispatcher } from '../services/events/facades'
+import { LoggerFacade as Logger } from '../services/logger/facades'
+import { AssetLoader } from '../utils/AssetLoader'
 
 export class Vision {
   protected core: Core

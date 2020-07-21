@@ -1,32 +1,32 @@
 import * as chalk from 'chalk'
-import { ETypeColors, Logger } from '../..'
+import { ETypeColors, Logger } from './types'
 
 export class ElixirLogger implements Logger {
   protected pad = true
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public info(...messages: any): ElixirLogger {
+  public info(...messages: any[]): ElixirLogger {
     this.log(ETypeColors.INFO, ...messages)
 
     return this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public warn(...messages: any): ElixirLogger {
+  public warn(...messages: any[]): ElixirLogger {
     this.log(ETypeColors.WARN, ...messages)
 
     return this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public error(...messages: any): ElixirLogger {
+  public error(...messages: any[]): ElixirLogger {
     this.log(ETypeColors.ERROR, ...messages)
 
     return this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public debug(...messages: any): ElixirLogger {
+  public debug(...messages: any[]): ElixirLogger {
     this.log(ETypeColors.DEBUG, ...messages)
 
     return this

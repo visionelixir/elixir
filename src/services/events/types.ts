@@ -3,6 +3,7 @@ export interface EventDispatcher {
   off: (event: string, callback: EventCallback) => EventDispatcher
   getCallbacks: (event: string) => EventCallback[]
   emit: (eventName: string, eventInstance: Event) => Promise<void>
+  isRegistered: boolean
 }
 
 export interface Event {

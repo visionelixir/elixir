@@ -1,4 +1,4 @@
-import { KeyValue } from '../../..'
+import { KeyValue } from '../../../vision/types'
 
 export class SystemVars {
   public static load(): KeyValue {

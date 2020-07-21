@@ -1,6 +1,8 @@
 import * as path from 'path'
 import * as nunjucks from 'nunjucks'
-import { KeyValue, View, ViewError } from '../..'
+import { KeyValue } from '../../vision/types'
+import { View } from './types'
+import { ViewError } from './ViewError'
 
 export class ElixirView implements View {
   public static EXTENSION = 'njk'

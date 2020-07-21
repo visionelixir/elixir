@@ -1,22 +1,16 @@
 import { AssetLoader } from '../AssetLoader'
-import * as elixir from '../../'
 import { VisionElixirEnvironment } from '../../'
+import { ContainerManager } from '../../services/container/ContainerManager'
+
+jest.mock('../../services/container/ContainerManager', require('../../services/container/mocks/ContainerManager').ContainerManagerMock)
 
 beforeEach(jest.clearAllMocks)
-
-const ContainerManagerGetMock = jest.fn()
-
-// @ts-ignore
-elixir['ContainerManager'] = {
-  get: () => ({
-    resolve: ContainerManagerGetMock
-  })
-} as any
 
 describe('Utils:AssetLoader', () => {
   it ('can get the vision config', () => {
     const config = { a: 'a' }
-    ContainerManagerGetMock.mockImplementationOnce(() => config)
+    // @ts-ignore
+    ContainerManager.resolve.mockImplementationOnce(() => config)
     const result = AssetLoader.getVisionConfig()
 
     expect(result).toBe(config)
@@ -32,7 +26,8 @@ describe('Utils:AssetLoader', () => {
 
   it ('can get config by environment type', () => {
     const config = { a: 'a' }
-    ContainerManagerGetMock.mockImplementationOnce(() => config)
+    // @ts-ignore
+    ContainerManager.resolve.mockImplementationOnce(() => config)
     const resultVision = AssetLoader.getConfig(VisionElixirEnvironment.VISION)
 
     expect(resultVision).toBe(config)

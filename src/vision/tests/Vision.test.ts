@@ -1,10 +1,12 @@
 import { Vision } from '../Vision'
-import * as elixir from '../..'
 import { Core, ElixirContainer, ElixirEvent, ElixirEvents, LoggerFacade, VisionElixirEnvironment } from '../..'
 import { TEST_VISION_CONFIG } from '../../test/fixtures/vision/config'
 import { VisionError } from '../../services/errorHandler/VisionError'
+import { EventDispatcherFacade as EventDispatcher } from '../../services/events/facades'
 
 jest.mock('../../services/logger/facades', require('../../services/logger/mocks/facades').LoggerFacadeMock)
+jest.mock('../../services/events/facades', require('../../services/events/mocks/facades').EventDispatcherFacadeMock)
+jest.mock('../../utils/AssetLoader', require('../../utils/mocks/AssetLoader').AssetLoaderMock)
 
 jest.mock('../middleware', () => {
   return {
@@ -17,16 +19,6 @@ jest.mock('../middleware', () => {
     }
   }
 })
-
-// @ts-ignore
-elixir['EventDispatcherFacade'] = {
-  emit: jest.fn()
-}
-
-// @ts-ignore
-elixir['AssetLoader'] = {
-  runAllServiceSetupFiles: jest.fn()
-}
 
 beforeEach(jest.clearAllMocks)
 
@@ -77,9 +69,9 @@ describe('Vision: Vision', () => {
     expect(vision['loadServices']).toBeCalledTimes(2)
     expect(vision['loadServices']).toBeCalledWith(VisionElixirEnvironment.ELIXIR)
     expect(vision['loadServices']).toBeCalledWith(VisionElixirEnvironment.VISION)
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledTimes(2)
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.INIT_SERVICE_SETUP_PRE, expect.any(ElixirEvent))
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.INIT_SERVICE_SETUP_POST, expect.any(ElixirEvent))
+    expect(EventDispatcher.emit).toBeCalledTimes(2)
+    expect(EventDispatcher.emit).toBeCalledWith(ElixirEvents.INIT_SERVICE_SETUP_PRE, expect.any(ElixirEvent))
+    expect(EventDispatcher.emit).toBeCalledWith(ElixirEvents.INIT_SERVICE_SETUP_POST, expect.any(ElixirEvent))
     expect(vision['configureMiddleware']).toBeCalledTimes(1)
 
     Vision.prototype['loadServices'] = visionLoadServicesOriginal
@@ -100,8 +92,8 @@ describe('Vision: Vision', () => {
 
     await vision['configureMiddleware']()
 
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledTimes(1)
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.INIT_MIDDLEWARE, expect.any(ElixirEvent))
+    expect(EventDispatcher.emit).toBeCalledTimes(1)
+    expect(EventDispatcher.emit).toBeCalledWith(ElixirEvents.INIT_MIDDLEWARE, expect.any(ElixirEvent))
     expect(coreUse).toBeCalledTimes(5)
   })
 

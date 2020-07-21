@@ -8,11 +8,11 @@ export enum ETypeColors {
 
 export interface Logger {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  info(...messages: any): Logger
+  info(...messages: any[]): Logger
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  warn(...messages: any): Logger
+  warn(...messages: any[]): Logger
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error(...messages: any): Logger
+  error(...messages: any[]): Logger
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  debug(...messages: any): Logger
+  debug(...messages: any[]): Logger
 }

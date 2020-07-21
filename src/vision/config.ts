@@ -1,4 +1,4 @@
-import { ElixirConfig } from '..'
+import { ElixirConfig } from '../vision/types'
 import * as path from 'path'
 
 export const ELIXIR_CONFIG: ElixirConfig = {

@@ -1,4 +1,6 @@
-import { KeyValue, LoggerFacade as Logger, Next, TaskMiddleware } from '../..'
+import { KeyValue, Next } from '../../vision/types'
+import { LoggerFacade as Logger } from '../logger/facades'
+import { TaskMiddleware } from './types'
 
 export class TaskRunner {
   protected env: string

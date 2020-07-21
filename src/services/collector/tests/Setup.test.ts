@@ -1,9 +1,7 @@
 import CollectorSetup from '../Setup'
+import { ElixirCollector } from '../Collector'
 
-jest.mock('../../..', () => ({
-  Vision: {} as any,
-  ElixirCollector: class {} as any
-}))
+jest.mock('../../../vision/Vision', require('../../../vision/mocks/Vision'))
 
 describe('Collector: Setup', () => {
   it ('should instantiate', async () => {
@@ -23,6 +21,6 @@ describe('Collector: Setup', () => {
     } as any)
 
     expect(singletonMock).toBeCalledTimes(1)
-    expect(singletonMock).toBeCalledWith('Collector', {})
+    expect(singletonMock).toBeCalledWith('Collector', expect.any(ElixirCollector))
   })
 })

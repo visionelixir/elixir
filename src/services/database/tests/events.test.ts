@@ -1,5 +1,5 @@
 import { initVarsHandler } from '../events'
-import { ElixirEvent } from '../../..'
+import { ElixirEvent } from '../../../services/events/Event'
 import { DatabaseManagerFacade as DatabaseManager } from '../facades'
 import { EventDispatcherFacade as EventManager } from '../../events/facades'
 

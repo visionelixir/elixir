@@ -1,6 +1,7 @@
 import { Pg } from '../Pg'
 import { DatabaseConnectionTypes } from '../types'
 import { DatabaseError } from '../DatabaseError'
+import { EventDispatcherFacade } from '../../events/facades'
 
 jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
 
@@ -69,6 +70,24 @@ describe('Pg', () => {
       { columnOne: 'value one', columnTwo: 'value two' },
       { columnOne: 'value three', columnTwo: 'value four' }
     ])
+  })
+
+  it ('should query even if the event dispatcher doesnt exist', async () => {
+    EventDispatcherFacade.isRegistered = false
+
+    const pg = new Pg('pg')
+    await pg.connect(config)
+    const result = await pg.query('select * from postgres', [ 1, 2, 3 ])
+
+    expect(mPool.connect).toBeCalledTimes(1)
+    expect(mClient.query).toBeCalledTimes(1)
+    expect(mClient.release).toBeCalledTimes(1)
+    expect(result).toMatchObject([
+      { columnOne: 'value one', columnTwo: 'value two' },
+      { columnOne: 'value three', columnTwo: 'value four' }
+    ])
+
+    EventDispatcherFacade.isRegistered = true
   })
 
   it ('should query one', async () => {

@@ -1,4 +1,5 @@
-import { Vision, ElixirCollector } from '../..'
+import { Vision } from '../../vision/Vision'
+import { ElixirCollector } from './Collector'
 
 export default class CollectorSetup {
   run(vision: Vision): void {

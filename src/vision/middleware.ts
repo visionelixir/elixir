@@ -1,15 +1,16 @@
 import {
   AsyncVoid,
   Context,
-  ElixirEvent,
   ElixirEvents,
-  EventDispatcherFacade as EventDispatcher,
   Middleware,
   Next,
-  Vision,
   VisionElixirEnvironment,
-  AssetLoader,
-} from '..'
+} from './types'
+import { ElixirEvent } from '../services/events/Event'
+import { EventDispatcherFacade as EventDispatcher } from '../services/events/facades'
+import { Vision } from './Vision'
+import { AssetLoader } from '../utils/AssetLoader'
+
 import * as serveStaticMiddleware from 'koa-static'
 import * as compressMiddleware from 'koa-compress'
 import * as path from 'path'

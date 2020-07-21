@@ -1,4 +1,4 @@
-import { KeyValue } from '../../..'
+import { KeyValue } from '../../../vision/types'
 import * as fs from 'fs'
 import * as path from 'path'
 

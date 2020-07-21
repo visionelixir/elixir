@@ -1,20 +1,7 @@
 import { ElixirPerformance as Performance } from '../Performance'
-import * as elixir from '../../..'
-import { PerformanceError } from '../../..'
+import { PerformanceError } from '../PerformanceError'
 
-const PerformanceMarkMock = class {
-  protected name: string
-
-  constructor(name: string) {
-    this.name = name
-  }
-
-  public start = jest.fn().mockImplementation(() => this)
-  public stop = jest.fn().mockImplementation(() => this)
-}
-
-// @ts-ignore
-elixir['PerformanceMark'] = PerformanceMarkMock
+jest.mock('../PerformanceMark', require('../mocks/PerformanceMark').PerformanceMarkMock)
 
 describe('Performance', () => {
   it ('can instantiate', () => {

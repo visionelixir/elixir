@@ -1,11 +1,8 @@
 import * as elixir from '../../../index'
 import EventsSetup from '../Setup'
-import { VisionElixirEnvironment } from '../../..'
+import { VisionElixirEnvironment } from '../../../vision/types'
 
-// @ts-ignore
-elixir['AssetLoader'] = {
-  loadAllServiceEvents: jest.fn()
-}
+jest.mock('../../../utils/AssetLoader', require('../../../utils/mocks/AssetLoader').AssetLoaderMock)
 
 describe('Events: Setup', () => {
   it('can be instantiated', () => {
@@ -27,7 +24,7 @@ describe('Events: Setup', () => {
 
     // container registration
     expect(singletonMock).toBeCalledTimes(1)
-    expect(singletonMock).toBeCalledWith('EventDispatcher', { events: {} })
+    expect(singletonMock).toBeCalledWith('EventDispatcher', { events: {}, isRegistered: false })
 
     // load event files
     expect(elixir['AssetLoader'].loadAllServiceEvents).toBeCalledTimes(2)

@@ -1,9 +1,5 @@
 import LoggerSetup from '../Setup'
-
-jest.mock('../../..', () => ({
-  Vision: {} as any,
-  ElixirLogger: class {} as any
-}))
+import { ElixirLogger } from '../Logger'
 
 describe('Logger: Setup', () => {
   it ('should instantiate', async () => {
@@ -23,6 +19,6 @@ describe('Logger: Setup', () => {
     } as any)
 
     expect(singletonMock).toBeCalledTimes(1)
-    expect(singletonMock).toBeCalledWith('Logger', {})
+    expect(singletonMock).toBeCalledWith('Logger', expect.any(ElixirLogger))
   })
 })

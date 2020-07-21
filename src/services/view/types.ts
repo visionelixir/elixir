@@ -1,4 +1,4 @@
-import { KeyValue } from '../..'
+import { KeyValue } from '../../vision/types'
 
 export interface ViewConfig {
   serviceViewDirectory: string

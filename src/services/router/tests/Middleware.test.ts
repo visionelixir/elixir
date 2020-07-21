@@ -1,13 +1,6 @@
 import { RouterMiddleware } from '../Middleware'
-import * as elixir from '../../..'
 
-// @ts-ignore
-elixir['RouterFacade'] = {
-  getCore: () => ({
-    allowedMethods: () => () => {},
-    routes: () => () => {}
-  }),
-}
+jest.mock('../facades', require('../mocks/facades').RouterFacadeMock)
 
 describe('Router: Middleware', () => {
   it ('returns a named function from loadRoutes', () => {

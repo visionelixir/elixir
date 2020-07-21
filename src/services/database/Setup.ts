@@ -1,14 +1,11 @@
-import {
-  AssetLoader,
-  DatabaseConfig,
-  DatabaseConnectionTypes,
-  DatabaseError,
-  ElixirDatabaseManager,
-  DatabaseManagerFacade as DatabaseManager,
-  Pg,
-  Vision,
-  VisionElixirEnvironment,
-} from '../..'
+import { AssetLoader } from '../../utils/AssetLoader'
+import { DatabaseConfig, DatabaseConnectionTypes } from './types'
+import { DatabaseError } from './DatabaseError'
+import { ElixirDatabaseManager } from './DatabaseManager'
+import { DatabaseManagerFacade as DatabaseManager } from './facades'
+import { Pg } from './Pg'
+import { Vision } from '../../vision/Vision'
+import { VisionElixirEnvironment } from '../../vision/types'
 
 export default class DatabaseSetup {
   run(vision: Vision): void {

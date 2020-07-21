@@ -1,11 +1,7 @@
 import * as elixir from '../../../..'
 import { responsePre } from '../../listeners/ResponsePre'
 
-// @ts-ignore
-elixir['PerformanceFacade'] = {
-  clear: jest.fn(),
-  start: jest.fn()
-} as any
+jest.mock('../../facades', require('../../mocks/facades').PerformanceFacadeMock)
 
 beforeEach(jest.clearAllMocks)
 

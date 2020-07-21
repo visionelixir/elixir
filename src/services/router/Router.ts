@@ -1,4 +1,5 @@
-import { Route, Middleware, RouterMethods, Router } from '../..'
+import { Route, RouterMethods, Router } from './types'
+import { Middleware } from '../../vision/types'
 import * as KoaRouter from 'koa-router'
 import { ElixirRoute } from './Route'
 

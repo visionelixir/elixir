@@ -1,4 +1,5 @@
-import { Pg, DEFAULT_CONNECTION, DatabaseManager } from '../..'
+import { Pg } from './Pg'
+import { DEFAULT_CONNECTION, DatabaseManager } from './types'
 
 export class ElixirDatabaseManager implements DatabaseManager {
   protected connections: { [key: string]: Pg } = {}

@@ -1,17 +1,13 @@
 import DatabaseSetup from '../Setup'
 import { DatabaseConnectionTypes } from '../types'
-import { AssetLoader, DatabaseError, DatabaseManagerFacade } from '../../..'
+import { AssetLoader } from '../../../utils/AssetLoader'
+import { DatabaseError } from '../DatabaseError'
+import { DatabaseManagerFacade } from '../facades'
 
-jest.mock('../../..', () => ({
-  AssetLoader: {
-    loadConfig: jest.fn()
-  },
-  VisionElixirEnvironment: jest.requireActual('../../../vision/types').VisionElixirEnvironment,
-  ElixirDatabaseManager: jest.requireActual('../DatabaseManager').ElixirDatabaseManager,
-  DatabaseConnectionTypes: jest.requireActual('../types').DatabaseConnectionTypes,
-  DatabaseManagerFacade: jest.requireActual('../mocks/facades').DatabaseManagerFacadeMock().DatabaseManagerFacade,
-  Pg: jest.fn(),
-}))
+jest.mock('../../../vision/Vision', require('../../../vision/mocks/Vision').VisionMock)
+jest.mock('../../database/facades', require('../../database/mocks/facades').DatabaseManagerFacadeMock)
+jest.mock('../../../utils/AssetLoader', require('../../../utils/mocks/AssetLoader').AssetLoaderMock)
+jest.mock('../Pg', require('../mocks/Pg').PgMock)
 
 describe('Collector: Setup', () => {
   it ('should instantiate', async () => {

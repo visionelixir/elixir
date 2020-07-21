@@ -1,4 +1,5 @@
-import { ElixirFacade, Vision } from '../..'
+import { Vision } from './Vision'
+import { ElixirFacade } from '../vision/Facade'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore

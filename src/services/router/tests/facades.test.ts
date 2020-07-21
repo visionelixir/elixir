@@ -1,9 +1,7 @@
 import { RouterFacade } from '../facades'
-import { ElixirFacade } from '../../..'
+import { ElixirFacade } from '../../../vision/Facade'
 
-jest.mock('../../..', () => ({
-  ElixirFacade: jest.fn()
-}))
+jest.mock('../../../vision/Facade', require('../../../vision/mocks/Facade').ElixirFacadeMock)
 
 describe('Router: Facade', () => {
   it ('should return the facade', async () => {

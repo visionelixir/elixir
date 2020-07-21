@@ -1,8 +1,9 @@
 import { appDataHandler, responsePostHandler, responsePreHandler } from '../events'
 import { CollectorFacade } from '../facades'
 import { EventDispatcherFacade } from '../../events/facades'
+import { ElixirEvent } from '../../events/Event'
 import { LoggerFacade } from '../../logger/facades'
-import { ElixirEvent, ElixirEvents } from '../../..'
+import { ElixirEvents } from '../../../vision/types'
 
 const ctx = {
   request: { method: 'GET', url: '/' },

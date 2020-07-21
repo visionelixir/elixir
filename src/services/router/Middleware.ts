@@ -1,4 +1,5 @@
-import { Middleware, RouterFacade as Router } from '../..'
+import { Middleware } from '../../vision/types'
+import { RouterFacade as Router } from './facades'
 
 export class RouterMiddleware {
   public static attachRoutes(): Middleware {

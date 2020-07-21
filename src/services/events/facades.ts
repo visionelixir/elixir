@@ -1,4 +1,5 @@
-import { ElixirFacade, EventDispatcher } from '../..'
+import { ElixirFacade } from '../../vision/Facade'
+import { EventDispatcher } from './types'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore

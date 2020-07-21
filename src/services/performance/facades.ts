@@ -1,4 +1,5 @@
-import { ElixirFacade, Performance } from '../..'
+import { ElixirFacade } from '../../vision/Facade'
+import { Performance } from './types'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore

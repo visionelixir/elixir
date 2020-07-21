@@ -60,13 +60,15 @@ export class Pg {
         return record
       })
 
-      await EventDispatcher.emit(
-        ElixirEvents.APP_DATA,
-        new ElixirEvent({
-          collection: 'queries',
-          payload: { query, params },
-        }),
-      )
+      if (EventDispatcher.isRegistered) {
+        await EventDispatcher.emit(
+          ElixirEvents.APP_DATA,
+          new ElixirEvent({
+            collection: 'queries',
+            payload: { query, params },
+          }),
+        )
+      }
 
       return formatted
     } catch (error) {

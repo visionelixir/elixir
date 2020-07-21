@@ -1,9 +1,7 @@
 import { EventDispatcherFacade } from '../facades'
-import { ElixirFacade } from '../../..'
+import { ElixirFacade } from '../../../vision/Facade'
 
-jest.mock('../../..', () => ({
-  ElixirFacade: jest.fn()
-}))
+jest.mock('../../../vision/Facade', require('../../../vision/mocks/Facade').ElixirFacadeMock)
 
 describe('Event Dispatcher Facade', () => {
   it ('should return the facade', async () => {

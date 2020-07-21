@@ -1,4 +1,5 @@
-import { KeyValue, Collector } from '../..'
+import { Collector } from './types'
+import { KeyValue } from '../../vision/types'
 
 export class ElixirCollector implements Collector {
   protected collections: KeyValue = {}

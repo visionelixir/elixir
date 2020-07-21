@@ -1,19 +1,19 @@
 import RouterSetup from '../Setup'
-import * as elixir from '../../../'
-import { ElixirRoute, ElixirRouter, RouterMethods, VisionElixirEnvironment } from '../../..'
+import { ElixirRoute } from '../Route'
+import { ElixirRouter } from '../Router'
+import { RouterMethods } from '../types'
+import { VisionElixirEnvironment } from '../../../vision/types'
+import { VisionMock } from '../../../vision/mocks/Vision'
+import { AssetLoader } from '../../../utils/AssetLoader'
+
+jest.mock('../../../utils/AssetLoader', require('../../../utils/mocks/AssetLoader').AssetLoaderMock)
 
 const singletonMock = jest.fn()
 
-const visionMock = {
-  getContainer: () => ({
-    singleton: singletonMock
-  })
-} as any
-
-// @ts-ignore
-elixir['AssetLoader'] = {
-  loadAllServiceRoutes: jest.fn()
-}
+const visionMock = VisionMock().Vision as any
+visionMock.getContainer.mockImplementation(() => ({
+  singleton: singletonMock
+}))
 
 beforeEach(jest.clearAllMocks)
 
@@ -46,8 +46,8 @@ describe('Router: Setup', () => {
 
     setup['loadRoutes']()
 
-    expect(elixir.AssetLoader.loadAllServiceRoutes).toBeCalledTimes(1)
-    expect(elixir.AssetLoader.loadAllServiceRoutes).toBeCalledWith(VisionElixirEnvironment.VISION)
+    expect(AssetLoader.loadAllServiceRoutes).toBeCalledTimes(1)
+    expect(AssetLoader.loadAllServiceRoutes).toBeCalledWith(VisionElixirEnvironment.VISION)
   })
 
   it ('attaches the routes', () => {

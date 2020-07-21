@@ -1,9 +1,6 @@
-import {
-  PerformanceMarkCollection,
-  PerformanceMark,
-  Performance,
-  PerformanceError,
-} from '../..'
+import { PerformanceMarkCollection, Performance } from './types'
+import { PerformanceMark } from './PerformanceMark'
+import { PerformanceError } from './PerformanceError'
 
 export class ElixirPerformance implements Performance {
   protected benchmarks: PerformanceMarkCollection = {}

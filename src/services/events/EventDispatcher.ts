@@ -3,6 +3,7 @@ import { EventCallback, Events, EventDispatcher } from './types'
 
 export class ElixirEventDispatcher implements EventDispatcher {
   protected events: Events = {}
+  public isRegistered = false
 
   public on(event: string, callback: EventCallback): ElixirEventDispatcher {
     if (!this.events[event]) {

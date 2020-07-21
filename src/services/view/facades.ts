@@ -1,5 +1,4 @@
-import { ElixirFacade, View } from '../..'
+import { View } from './types'
+import { ElixirFacade } from '../../vision/Facade'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-export const ViewFacade = new ElixirFacade('View') as View
+export const ViewFacade = (new ElixirFacade('View') as unknown) as View

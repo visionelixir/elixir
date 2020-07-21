@@ -1,29 +1,12 @@
-import * as elixir from '../../../..'
 import { responsePost } from '../../listeners/ResponsePost'
-import { ElixirEvent, ElixirEvents } from '../../../..'
+import { ElixirEvent } from '../../../events/Event'
+import { ElixirEvents } from '../../../../vision/types'
+import { PerformanceFacade } from '../../facades'
+import { PerformanceFacadeMock } from '../../mocks/facades'
+import { EventDispatcherFacade } from '../../../events/facades'
 
-// @ts-ignore
-elixir['EventDispatcherFacade'] = {
-  emit: jest.fn()
-} as any
-
-// @ts-ignore
-elixir['PerformanceFacade'] = {
-  stop: jest.fn(),
-  allArray: jest.fn(() => [
-    {
-      getName: jest.fn(),
-      getDuration: jest.fn()
-    },
-    {
-      getName: jest.fn(),
-      getDuration: jest.fn()
-    }
-  ]),
-  get: jest.fn(() => ({
-    getDuration: jest.fn(() => 12345.12345)
-  }))
-} as any
+jest.mock('../../../events/facades', require('../../../events/mocks/facades').EventDispatcherFacadeMock)
+jest.mock('../../facades', require('../../mocks/facades').PerformanceFacadeMock)
 
 const ctxMock = {
   set: jest.fn()
@@ -41,11 +24,15 @@ describe('Performance: Listeners: ResponsePost', () => {
   it ('stops the response timer', async () => {
     await responsePost(eventMock)
 
-    expect(elixir.PerformanceFacade.stop).toBeCalledTimes(1)
-    expect(elixir.PerformanceFacade.stop).toBeCalledWith('App:Response')
+    expect(PerformanceFacade.stop).toBeCalledTimes(1)
+    expect(PerformanceFacade.stop).toBeCalledWith('App:Response')
   })
 
   it ('sets the response time header', async () => {
+    PerformanceFacadeMock().PerformanceFacade.get.mockImplementationOnce(jest.fn(() => ({
+      getDuration: jest.fn(() => 12345.12345)
+    })))
+
     await responsePost(eventMock)
 
     expect(ctxMock.set).toBeCalledTimes(1)
@@ -55,7 +42,7 @@ describe('Performance: Listeners: ResponsePost', () => {
   it ('adds the performance data to app data', async () => {
     await responsePost(eventMock)
 
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledTimes(1)
-    expect(elixir.EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.APP_DATA, expect.any(ElixirEvent))
+    expect(EventDispatcherFacade.emit).toBeCalledTimes(1)
+    expect(EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.APP_DATA, expect.any(ElixirEvent))
   })
 })

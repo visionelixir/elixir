@@ -128,4 +128,18 @@ describe('Elixir Container', () => {
       container.setService(serviceName, ContainerTypes.SINGLETON, service)
     }).toThrowError(ContainerError)
   })
+
+  it ('can return if something is registered or not', () => {
+    const container = new ElixirContainer()
+    const service = { a: 1, b: 2 }
+    const serviceName = 'myService'
+
+    container.setService(serviceName, ContainerTypes.SINGLETON, service)
+
+    const existsResult = container.has(serviceName)
+    const doesntExistResult = container.has('something')
+
+    expect(existsResult).toBe(true)
+    expect(doesntExistResult).toBe(false)
+  })
 })

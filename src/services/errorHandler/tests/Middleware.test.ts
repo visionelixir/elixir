@@ -1,7 +1,12 @@
 import { ErrorHandlerMiddleware } from '../Middleware'
 import { PayloadError } from '../PayloadError'
-import * as elixir from '../../..'
-import { ElixirError, ElixirEvents } from '../../..'
+import { ElixirError } from '../ElixirError'
+import { ElixirEvents } from '../../../vision/types'
+import { LoggerFacade } from '../../logger/facades'
+import { EventDispatcherFacade } from '../../events/facades'
+
+jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
+jest.mock('../../logger/facades', require('../../logger/mocks/facades').LoggerFacadeMock)
 
 afterEach(jest.clearAllMocks)
 
@@ -69,47 +74,28 @@ describe('Error Middleware: Error handler', () => {
   })
 
   it ('should log the error', () => {
-    // @ts-ignore
-    elixir['LoggerFacade'] = {
-      error: jest.fn(),
-      info: jest.fn(),
-      debug: jest.fn(),
-    }
-
     ErrorHandlerMiddleware['log'](new PayloadError('my error', null), {
       method: 'GET',
       url: 'http://someurl.com',
     } as any)
 
-    expect(elixir.LoggerFacade.error).toBeCalledTimes(1)
-    expect(elixir.LoggerFacade.info).toBeCalledTimes(1)
-    expect(elixir.LoggerFacade.debug).toBeCalledTimes(1)
+    expect(LoggerFacade.error).toBeCalledTimes(1)
+    expect(LoggerFacade.info).toBeCalledTimes(1)
+    expect(LoggerFacade.debug).toBeCalledTimes(1)
   })
 
   it ('should log the error payload', () => {
-    // @ts-ignore
-    elixir['LoggerFacade'] = {
-      error: jest.fn(),
-      info: jest.fn(),
-      debug: jest.fn(),
-    }
-
     ErrorHandlerMiddleware['log'](new PayloadError('my error', 'payload'), {
       method: 'GET',
       url: 'http://someurl.com',
     } as any)
 
-    expect(elixir.LoggerFacade.error).toBeCalledTimes(1)
-    expect(elixir.LoggerFacade.info).toBeCalledTimes(1)
-    expect(elixir.LoggerFacade.debug).toBeCalledTimes(2)
+    expect(LoggerFacade.error).toBeCalledTimes(1)
+    expect(LoggerFacade.info).toBeCalledTimes(1)
+    expect(LoggerFacade.debug).toBeCalledTimes(2)
   })
 
   it ('should emit the error event for error codes 4xx & 5xx', async () => {
-    // @ts-ignore
-    elixir['EventDispatcherFacade'] = {
-      emit: jest.fn()
-    }
-
     await ErrorHandlerMiddleware['emitEvent'](
       {} as any,
       500,
@@ -117,8 +103,8 @@ describe('Error Middleware: Error handler', () => {
       {} as any
     )
 
-    expect(elixir['EventDispatcherFacade'].emit).toBeCalledTimes(1)
-    expect(elixir['EventDispatcherFacade'].emit).toBeCalledWith(
+    expect(EventDispatcherFacade.emit).toBeCalledTimes(1)
+    expect(EventDispatcherFacade.emit).toBeCalledWith(
       ElixirEvents.RESPONSE_ERROR,
       {
         "data": {
@@ -140,8 +126,8 @@ describe('Error Middleware: Error handler', () => {
       {} as any
     )
 
-    expect(elixir['EventDispatcherFacade'].emit).toBeCalledTimes(1)
-    expect(elixir['EventDispatcherFacade'].emit).toBeCalledWith(
+    expect(EventDispatcherFacade.emit).toBeCalledTimes(1)
+    expect(EventDispatcherFacade.emit).toBeCalledWith(
       ElixirEvents.RESPONSE_ERROR,
       {
         "data": {
@@ -156,11 +142,6 @@ describe('Error Middleware: Error handler', () => {
   })
 
   it ('should not emit the error event for error codes 2xx & 3xx', async () => {
-    // @ts-ignore
-    elixir['EventDispatcherFacade'] = {
-      emit: jest.fn()
-    }
-
     await ErrorHandlerMiddleware['emitEvent'](
       {} as any,
       200,
@@ -168,7 +149,7 @@ describe('Error Middleware: Error handler', () => {
       {} as any
     )
 
-    expect(elixir['EventDispatcherFacade'].emit).not.toBeCalled()
+    expect(EventDispatcherFacade.emit).not.toBeCalled()
 
     await ErrorHandlerMiddleware['emitEvent'](
       {} as any,
@@ -177,6 +158,6 @@ describe('Error Middleware: Error handler', () => {
       {} as any
     )
 
-    expect(elixir['EventDispatcherFacade'].emit).not.toBeCalled()
+    expect(EventDispatcherFacade.emit).not.toBeCalled()
   })
 })

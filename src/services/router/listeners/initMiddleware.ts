@@ -1,4 +1,4 @@
-import { ElixirEvent } from '../../..'
+import { ElixirEvent } from '../../events/Event'
 import { RouterMiddleware } from '../Middleware'
 
 export const initMiddleware = async (event: ElixirEvent): Promise<void> => {

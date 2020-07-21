@@ -1,4 +1,4 @@
-import { Pg } from '../..'
+import { Pg } from './Pg'
 
 export enum DatabaseConnectionTypes {
   PG = 'PG',

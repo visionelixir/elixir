@@ -1,5 +1,5 @@
 import { Task } from '../Task'
-import { Next } from '../../../..'
+import { Next } from '../../../vision/types'
 
 const called = jest.fn()
 

@@ -3,5 +3,6 @@ export const LoggerFacadeMock = () => ({
     error: jest.fn(),
     info: jest.fn(),
     debug: jest.fn(),
+    warn: jest.fn(),
   },
 })

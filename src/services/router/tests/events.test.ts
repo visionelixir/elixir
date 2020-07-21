@@ -1,16 +1,13 @@
-import * as elixir from '../../..'
-import { ElixirEvents } from '../../..'
+import { ElixirEvents } from '../../../vision/types'
+import { EventDispatcherFacade } from '../../events/facades'
 
-// @ts-ignore
-elixir['EventDispatcherFacade'] = {
-  on: jest.fn()
-} as any
+jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
 
 describe('Router: Events', () => {
   it ('attaches the events', async () => {
     require('../events')
 
-    expect(elixir['EventDispatcherFacade'].on).toBeCalledTimes(1)
-    expect(elixir['EventDispatcherFacade'].on).toBeCalledWith(ElixirEvents.INIT_MIDDLEWARE, expect.any(Function))
+    expect(EventDispatcherFacade.on).toBeCalledTimes(1)
+    expect(EventDispatcherFacade.on).toBeCalledWith(ElixirEvents.INIT_MIDDLEWARE, expect.any(Function))
   })
 })

@@ -1,4 +1,4 @@
-import { PerformanceFacade as Performance } from '../../..'
+import { PerformanceFacade as Performance } from '../facades'
 
 export const responsePre = async (): Promise<void> => {
   Performance.clear()

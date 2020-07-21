@@ -1,9 +1,9 @@
+import { ContainerManager } from '../services/container/ContainerManager'
 import {
-  ContainerManager,
   ElixirConfig,
   VisionConfig,
   VisionElixirEnvironment,
-} from '..'
+} from '../vision/types'
 import { ELIXIR_CONFIG } from '../vision/config'
 import * as path from 'path'
 import { VisionFacade } from '../vision/facades'

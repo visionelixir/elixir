@@ -1,4 +1,4 @@
-import { Middleware } from '../..'
+import { Middleware } from '../../vision/types'
 import * as KoaRouter from 'koa-router'
 
 export enum RouterMethods {

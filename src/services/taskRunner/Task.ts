@@ -1,4 +1,5 @@
-import { TaskRunner, TaskMiddleware } from '../..'
+import { TaskRunner } from './TaskRunner'
+import { TaskMiddleware } from './types'
 
 export abstract class Task {
   protected task: TaskRunner

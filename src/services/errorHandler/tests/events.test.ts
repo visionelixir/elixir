@@ -1,5 +1,7 @@
-import * as elixir from '../../..'
-import { ElixirEvent } from '../../..'
+import { ElixirEvent } from '../../events/Event'
+import { EventDispatcherFacade } from '../../events/facades'
+
+jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
 
 let passedCallback: any = null
 
@@ -9,23 +11,15 @@ jest.mock('../Middleware', () => ({
   }
 }))
 
-// @ts-ignore
-elixir['EventDispatcherFacade'] = {
-  on: jest.fn((_event, callback) => {
-    passedCallback = callback
-  })
-} as any
-
 afterEach(jest.clearAllMocks)
 
 describe('Error Middleware: Error handler', () => {
-  it('should listen to the event', async () => {
-    require('../events')
+  it ('should add the middleware and should listen to the event', async () => {
+    // @ts-ignore
+    EventDispatcherFacade.on.mockImplementationOnce((_event, callback) => {
+      passedCallback = callback
+    })
 
-    expect(elixir['EventDispatcherFacade'].on).toBeCalledTimes(1)
-  })
-
-  it ('should add the middleware', async () => {
     require('../events')
 
     expect(passedCallback).not.toBeNull()
@@ -38,5 +32,6 @@ describe('Error Middleware: Error handler', () => {
 
     expect(data.middlewareStack).toHaveLength(3)
     expect(data.middlewareStack[0]).toEqual('error middleware')
+    expect(EventDispatcherFacade.on).toBeCalledTimes(1)
   })
 })

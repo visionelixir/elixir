@@ -1,9 +1,7 @@
-import {
-  Vision,
-  VisionElixirEnvironment,
-  AssetLoader,
-  ElixirEventDispatcher,
-} from '../..'
+import { Vision } from '../../vision/Vision'
+import { VisionElixirEnvironment } from '../../vision/types'
+import { AssetLoader } from '../../utils/AssetLoader'
+import { ElixirEventDispatcher } from './EventDispatcher'
 
 export default class EventsSetup {
   run(vision: Vision): void {

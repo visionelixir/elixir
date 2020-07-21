@@ -1,15 +1,13 @@
-import {
-  AssetLoader,
-  ElixirRouter,
-  Route,
-  Vision,
-  VisionElixirEnvironment,
-} from '../..'
+import { AssetLoader } from '../../utils/AssetLoader'
+import { ElixirRouter } from './Router'
+import { Route } from './types'
+import { Vision } from '../../vision/Vision'
+import { VisionElixirEnvironment } from '../../vision/types'
 
 export default class RouterSetup {
   /**
    * Run
-   * Automagically run at startup by the
+   * Automagically run at startup
    */
   public run(vision: Vision): void {
     const router = new ElixirRouter()

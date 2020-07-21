@@ -1,22 +1,17 @@
-import {
-  AssetLoader,
-  ViewConfig,
-  Vision,
-  VisionConfig,
-  VisionElixirEnvironment,
-} from '../..'
+import { AssetLoader } from '../../utils/AssetLoader'
+import { ViewConfig } from './types'
+import { Vision } from '../../vision/Vision'
+import { VisionConfig, VisionElixirEnvironment } from '../../vision/types'
 import * as path from 'path'
 import * as nunjucks from 'nunjucks'
 import { ElixirView } from './View'
 
 export default class ViewSetup {
   run(vision: Vision): void {
-    // prettier-ignore
-    const viewConfig: ViewConfig = AssetLoader
-      .loadConfig<ViewConfig>(
-        VisionElixirEnvironment.VISION,
-        'views',
-      )
+    const viewConfig: ViewConfig = AssetLoader.loadConfig<ViewConfig>(
+      VisionElixirEnvironment.VISION,
+      'views',
+    )
 
     const visionConfig = AssetLoader.getVisionConfig()
 
