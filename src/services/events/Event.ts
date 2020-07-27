@@ -6,7 +6,7 @@ export class ElixirEvent implements Event {
 
   protected name = 'event'
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   constructor(data?: any, name?: string) {
     if (data) {
       this.setData(data)
@@ -23,7 +23,7 @@ export class ElixirEvent implements Event {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   public setData(data: any): ElixirEvent {
     this.data = data
 

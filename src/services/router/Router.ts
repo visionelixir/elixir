@@ -69,7 +69,7 @@ export class ElixirRouter implements Router {
     path: string,
     middleware: Middleware[],
   ): ElixirRouter => {
-    methods.map(method => this.add(method, path, middleware))
+    methods.map((method) => this.add(method, path, middleware))
 
     return this
   }

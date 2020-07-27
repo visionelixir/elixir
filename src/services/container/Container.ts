@@ -25,7 +25,7 @@ export class ElixirContainer implements Container {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   public singleton(name: string, object: any, force = false): ElixirContainer {
     this.setService(name, ContainerTypes.SINGLETON, object, force)
 
@@ -35,7 +35,7 @@ export class ElixirContainer implements Container {
   public setService(
     name: string,
     type: ContainerTypes,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
     object: any,
     force = false,
   ): ElixirContainer {

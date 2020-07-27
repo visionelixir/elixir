@@ -14,7 +14,6 @@ import { AssetLoader } from '../utils/AssetLoader'
 import * as serveStaticMiddleware from 'koa-static'
 import * as compressMiddleware from 'koa-compress'
 import * as path from 'path'
-import * as zlib from 'zlib'
 import bodyParser = require('koa-bodyparser')
 
 export class AppMiddleware {
@@ -56,7 +55,6 @@ export class AppMiddleware {
     const compress = compressMiddleware({
       filter: this.filter,
       threshold: 0,
-      flush: zlib.constants.Z_SYNC_FLUSH,
     })
 
     Object.defineProperty(compress, 'name', { value: 'compress' })

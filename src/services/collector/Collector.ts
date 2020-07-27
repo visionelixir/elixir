@@ -4,7 +4,7 @@ import { KeyValue } from '../../vision/types'
 export class ElixirCollector implements Collector {
   protected collections: KeyValue = {}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   public add = (name: string, value: any): ElixirCollector => {
     if (!this.collections[name]) {
       this.collections[name] = []

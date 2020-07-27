@@ -8,5 +8,7 @@ export const PerformanceMarkMock = () => ({
 
     public start = jest.fn().mockImplementation(() => this)
     public stop = jest.fn().mockImplementation(() => this)
+
+    public isRunning = jest.fn().mockImplementation(() => true)
   }
 })

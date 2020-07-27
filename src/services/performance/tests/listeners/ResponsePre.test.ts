@@ -9,8 +9,8 @@ describe('Performance: Listeners: ResponsePost', () => {
   it ('clears performance', async () => {
     await responsePre()
 
-    expect(elixir.PerformanceFacade.clear).toBeCalledTimes(1)
-    expect(elixir.PerformanceFacade.clear).toBeCalledWith()
+    expect(elixir.PerformanceFacade.clearAll).toBeCalledTimes(1)
+    expect(elixir.PerformanceFacade.clearAll).toBeCalledWith()
   })
 
   it ('starts the app response timer', async () => {

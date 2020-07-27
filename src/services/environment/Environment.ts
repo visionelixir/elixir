@@ -37,7 +37,7 @@ export class Environment {
   public static fetch(): Environment {
     let vars = {}
 
-    this.loaders.map(Loader => {
+    this.loaders.map((Loader) => {
       const result = Loader.load()
 
       if (result) {

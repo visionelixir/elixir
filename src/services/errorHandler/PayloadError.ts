@@ -27,7 +27,7 @@ export class PayloadError extends Error {
     return this.payload
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
   public setPayload(payload: any): PayloadError {
     this.payload = payload
 

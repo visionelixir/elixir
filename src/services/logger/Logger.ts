@@ -34,10 +34,7 @@ export class ElixirLogger implements Logger {
 
   protected getTimeStamp(): string {
     const now = new Date()
-    const timeString = now
-      .toISOString()
-      .split('.')[0]
-      .replace('T', ' ')
+    const timeString = now.toISOString().split('.')[0].replace('T', ' ')
 
     return timeString
   }

@@ -17,5 +17,6 @@ export const PerformanceFacadeMock = () => ({
       }
     ]),
     clear: jest.fn(),
+    clearAll: jest.fn(),
   },
 })

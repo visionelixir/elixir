@@ -10,12 +10,11 @@ export class FileVars {
     pathParts.pop()
     const basePath = pathParts.join('/')
 
-    const result = fs.readFileSync(
-      path.resolve(basePath, '.environment'),
-      'UTF8',
-    )
+    const result = fs
+      .readFileSync(path.resolve(basePath, '.environment'))
+      .toString()
 
-    result.split('\n').map(row => {
+    result.split('\n').map((row) => {
       if (row) {
         const [name, value] = row.split('=')
         vars[name.trim()] = value.trim()

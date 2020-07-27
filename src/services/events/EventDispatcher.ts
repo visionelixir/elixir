@@ -43,7 +43,7 @@ export class ElixirEventDispatcher implements EventDispatcher {
 
   public async emit(eventName: string, eventInstance: Event): Promise<void> {
     await Promise.all(
-      this.getCallbacks(eventName).map(async callback => {
+      this.getCallbacks(eventName).map(async (callback) => {
         await callback(eventInstance)
       }),
     )

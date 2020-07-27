@@ -168,7 +168,7 @@ export class Vision {
    * Serves the vision
    */
   public async up(): Promise<Vision | false> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (!this.config) {
         throw new VisionError('Please run create on your vision before serving')
       }
@@ -177,7 +177,7 @@ export class Vision {
 
       this.server = http
         .createServer(this.getCore().callback())
-        .on('error', error => {
+        .on('error', (error) => {
           this.errored(error)
           resolve(false)
         })

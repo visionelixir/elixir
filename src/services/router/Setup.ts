@@ -43,10 +43,10 @@ export default class RouterSetup {
       // duplicate the array
       const args = route.getMiddleware().slice(0)
       // add the path
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       args.unshift(route.getPath())
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       core[route.getMethod()](...args)
     })
