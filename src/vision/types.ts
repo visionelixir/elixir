@@ -1,7 +1,7 @@
 import * as koa from 'koa'
 
 export class Core extends koa {}
-export { Middleware, Next, Context } from 'koa'
+export { Middleware, Next, Context, Request, Response } from 'koa'
 
 export type AsyncVoid = Promise<void>
 
