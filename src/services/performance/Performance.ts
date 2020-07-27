@@ -49,7 +49,11 @@ export class ElixirPerformance implements Performance {
   }
 
   public clearAll = (): ElixirPerformance => {
-    this.allArray().map(mark => mark.stop())
+    this.allArray().map(mark => {
+      if (mark.isRunning()) {
+        mark.stop()
+      }
+    })
     this.benchmarks = {}
 
     return this

@@ -65,7 +65,11 @@ export class AssetLoader {
     const config = this.getConfig(environment)
     const file = config.services.eventFile
 
-    this.runServiceAsset(environment, service, file)
+    try {
+      this.runServiceAsset(environment, service, file)
+    } catch (_e) {
+      // if event file doesn't exist it's ok to continue
+    }
   }
 
   public static loadAllServiceRoutes(

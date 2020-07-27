@@ -42,7 +42,7 @@ export class Environment {
 
       if (result) {
         vars = {
-          ...this.vars,
+          ...vars,
           ...result,
         }
       }

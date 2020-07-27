@@ -1,6 +1,6 @@
 import { PerformanceFacade as Performance } from '../facades'
 
 export const responsePre = async (): Promise<void> => {
-  Performance.clear()
+  Performance.clearAll()
   Performance.start('App:Response')
 }
