@@ -8,9 +8,13 @@ export class Environment {
   public static vars: KeyValue = {}
   public static loaders = [SystemVars, FileVars, CommandVars]
 
-  public static get(variableName: string): string | null {
+  public static get(variableName: string): string | boolean | null {
     if (!this.hasFetched) {
       this.fetch()
+    }
+
+    if (this.vars[variableName] === 'false' || this.vars[variableName] === 'true') {
+      return this.vars[variableName] === 'true'
     }
 
     return this.vars[variableName]
