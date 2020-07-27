@@ -13,7 +13,10 @@ export class Environment {
       this.fetch()
     }
 
-    if (this.vars[variableName] === 'false' || this.vars[variableName] === 'true') {
+    if (
+      this.vars[variableName] === 'false' ||
+      this.vars[variableName] === 'true'
+    ) {
       return this.vars[variableName] === 'true'
     }
 
