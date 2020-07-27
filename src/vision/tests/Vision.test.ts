@@ -184,5 +184,6 @@ describe('Vision: Vision', () => {
     await expect(vision.down()).rejects.toThrowError(Error)
 
     vision['server'].close = originalClose
+    await vision.down()
   })
 })
