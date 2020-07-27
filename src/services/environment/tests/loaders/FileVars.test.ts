@@ -4,6 +4,7 @@ jest.mock('fs', () => {
   return {
     readFileSync: jest.fn(() => {
       return `KEY=value
+      
       KEY2=value 2
        KEY3=value 3`
     })

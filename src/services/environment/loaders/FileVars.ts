@@ -31,7 +31,10 @@ export class FileVars {
     loaded.split('\n').map((row) => {
       if (row) {
         const [name, value] = row.split('=')
-        vars[name.trim()] = value.trim()
+
+        if (name && value) {
+          vars[name.trim()] = value.trim()
+        }
       }
     })
 
