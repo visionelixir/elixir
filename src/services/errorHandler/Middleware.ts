@@ -18,7 +18,17 @@ export class ErrorHandlerMiddleware {
       try {
         await next()
       } catch (error) {
-        ctx.status = 500
+        const { status } = ctx
+
+        console.log(status)
+
+        if (
+          status === undefined ||
+          String(status).startsWith('2') ||
+          String(status).startsWith('3')
+        ) {
+          ctx.status = 500
+        }
 
         if (!(error instanceof PayloadError)) {
           error = new ElixirError(error.message, error)
