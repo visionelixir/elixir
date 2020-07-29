@@ -30,15 +30,15 @@ describe('Environment', () => {
       number: '123'
     }
 
-    const def: string = Environment.get('string')
-    const string: string = Environment.get('string', 'string')
-    const number: number = Environment.get('number', 'number')
-    const boolean: boolean = Environment.get('boolean', 'boolean')
-    const boolean2: boolean = Environment.get('boolean2', 'boolean')
-    const boolean3: boolean = Environment.get('boolean3', 'boolean')
-    const boolean4: boolean = Environment.get('boolean4', 'boolean')
-    const boolean5: boolean = Environment.get('boolean5', 'boolean')
-    const boolean6: boolean = Environment.get('boolean6', 'boolean')
+    const def: string | null = Environment.get('string')
+    const string: string | null = Environment.get('string', 'string')
+    const number: number | null = Environment.get('number', 'number')
+    const boolean: boolean | null = Environment.get('boolean', 'boolean')
+    const boolean2: boolean | null = Environment.get('boolean2', 'boolean')
+    const boolean3: boolean | null = Environment.get('boolean3', 'boolean')
+    const boolean4: boolean | null = Environment.get('boolean4', 'boolean')
+    const boolean5: boolean | null = Environment.get('boolean5', 'boolean')
+    const boolean6: boolean | null = Environment.get('boolean6', 'boolean')
 
     expect(Environment.fetch).toBeCalledTimes(9)
     expect(def).toBe('567')
