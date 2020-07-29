@@ -35,7 +35,7 @@ export class Environment {
       case 'number':
         value = Number(value)
         break
-      case 'string':
+      default:
         value = String(value)
     }
 

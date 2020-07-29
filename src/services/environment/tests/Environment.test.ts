@@ -25,14 +25,17 @@ describe('Environment', () => {
       number: '123'
     }
 
+    const def = Environment.get('string')
     const string = Environment.get('string', 'string')
     const number = Environment.get('number', 'number')
     const boolean = Environment.get('boolean', 'boolean')
 
-    expect(Environment.fetch).toBeCalledTimes(3)
+    expect(Environment.fetch).toBeCalledTimes(4)
+    expect(def).toBe('567')
     expect(string).toBe('567')
     expect(number).toBe(123)
     expect(boolean).toBe(true)
+
 
     Environment.fetch = original as any
   })
