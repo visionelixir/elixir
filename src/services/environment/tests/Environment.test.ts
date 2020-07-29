@@ -22,19 +22,34 @@ describe('Environment', () => {
     Environment.vars = {
       string: 567,
       boolean: 'true',
+      boolean2: 'false',
+      boolean3: '0',
+      boolean4: '1',
+      boolean5: 0,
+      boolean6: 1,
       number: '123'
     }
 
-    const def = Environment.get('string')
-    const string = Environment.get('string', 'string')
-    const number = Environment.get('number', 'number')
-    const boolean = Environment.get('boolean', 'boolean')
+    const def: string = Environment.get('string')
+    const string: string = Environment.get('string', 'string')
+    const number: number = Environment.get('number', 'number')
+    const boolean: boolean = Environment.get('boolean', 'boolean')
+    const boolean2: boolean = Environment.get('boolean2', 'boolean')
+    const boolean3: boolean = Environment.get('boolean3', 'boolean')
+    const boolean4: boolean = Environment.get('boolean4', 'boolean')
+    const boolean5: boolean = Environment.get('boolean5', 'boolean')
+    const boolean6: boolean = Environment.get('boolean6', 'boolean')
 
-    expect(Environment.fetch).toBeCalledTimes(4)
+    expect(Environment.fetch).toBeCalledTimes(9)
     expect(def).toBe('567')
     expect(string).toBe('567')
     expect(number).toBe(123)
     expect(boolean).toBe(true)
+    expect(boolean2).toBe(false)
+    expect(boolean3).toBe(false)
+    expect(boolean4).toBe(true)
+    expect(boolean5).toBe(false)
+    expect(boolean6).toBe(true)
 
 
     Environment.fetch = original as any

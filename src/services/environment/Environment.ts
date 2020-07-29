@@ -3,34 +3,38 @@ import { SystemVars } from './loaders/SystemVars'
 import { CommandVars } from './loaders/CommandVars'
 import { FileVars } from './loaders/FileVars'
 
-type CastType<T> = T extends 'string'
-  ? string
-  : T extends 'number'
-  ? number
-  : T extends 'boolean'
-  ? boolean
-  : never
-
-type CastName = 'string' | 'number' | 'boolean'
-
 export class Environment {
   public static hasFetched = false
   public static vars: KeyValue = {}
   public static loaders = [SystemVars, FileVars, CommandVars]
 
-  public static get<T extends CastName>(
+  public static get(variableName: string, cast: 'string'): string | null
+  public static get(variableName: string, cast: 'number'): number | null
+  public static get(variableName: string, cast: 'boolean'): boolean | null
+  public static get(variableName: string): string | null
+  public static get<T extends string | number | boolean | null>(
     variableName: string,
     cast?: T,
-  ): CastType<T> | string {
+  ): T | null {
     if (!this.hasFetched) {
       this.fetch()
     }
 
     let value = this.vars[variableName]
 
+    if (typeof value === 'undefined') {
+      return null
+    }
+
     switch (cast) {
       case 'boolean':
-        value = Boolean(value)
+        if (value === 'true' || value === '1') {
+          value = true
+        } else if (value === 'false' || value === '0') {
+          value = false
+        } else {
+          value = Boolean(value)
+        }
         break
       case 'number':
         value = Number(value)
@@ -39,7 +43,7 @@ export class Environment {
         value = String(value)
     }
 
-    return value as CastType<T>
+    return value
   }
 
   public static all(): KeyValue {
