@@ -20,8 +20,6 @@ export class ErrorHandlerMiddleware {
       } catch (error) {
         const { status } = ctx
 
-        console.log(status)
-
         if (
           status === undefined ||
           String(status).startsWith('2') ||
