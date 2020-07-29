@@ -16,6 +16,27 @@ describe('Environment', () => {
     Environment.fetch = original as any
   })
 
+  it('should get casted', () => {
+    const original = Environment.fetch
+    Environment.fetch = jest.fn()
+    Environment.vars = {
+      string: 567,
+      boolean: 'true',
+      number: '123'
+    }
+
+    const string = Environment.get('string', 'string')
+    const number = Environment.get('number', 'number')
+    const boolean = Environment.get('boolean', 'boolean')
+
+    expect(Environment.fetch).toBeCalledTimes(3)
+    expect(string).toBe('567')
+    expect(number).toBe(123)
+    expect(boolean).toBe(true)
+
+    Environment.fetch = original as any
+  })
+
   it ('should not fetch if hasFetched is true when running get()', () => {
     const original = Environment.fetch
     Environment.fetch = jest.fn()
