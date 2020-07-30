@@ -40,7 +40,7 @@ export interface ServicesConfig {
   require: Array<string>
 }
 
-export interface ElixirConfig {
+export interface ElixirConf {
   baseDirectory: string
   configDirectory: string
   services: ServicesConfig

@@ -1,6 +1,6 @@
 import { ContainerManager } from '../services/container/ContainerManager'
 import {
-  ElixirConfig,
+  ElixirConf,
   VisionConfig,
   VisionElixirEnvironment,
 } from '../vision/types'
@@ -13,7 +13,7 @@ export class AssetLoader {
     return ContainerManager.get().resolve('VisionConfig')
   }
 
-  public static getElixirConfig(): ElixirConfig {
+  public static getElixirConfig(): ElixirConf {
     return ELIXIR_CONFIG
   }
 
@@ -22,13 +22,13 @@ export class AssetLoader {
   ): VisionConfig
   public static getConfig(
     environment: VisionElixirEnvironment.ELIXIR,
-  ): ElixirConfig
+  ): ElixirConf
   public static getConfig(
     environment: VisionElixirEnvironment,
-  ): VisionConfig | ElixirConfig
+  ): VisionConfig | ElixirConf
   public static getConfig(
     environment: VisionElixirEnvironment,
-  ): VisionConfig | ElixirConfig {
+  ): VisionConfig | ElixirConf {
     if (environment === VisionElixirEnvironment.ELIXIR) {
       return this.getElixirConfig()
     } else {

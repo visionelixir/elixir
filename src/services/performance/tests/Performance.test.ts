@@ -1,3 +1,4 @@
+import { mocked } from 'ts-jest'
 import { ElixirPerformance as Performance } from '../Performance'
 import { PerformanceError } from '../PerformanceError'
 
@@ -124,6 +125,29 @@ describe('Performance', () => {
     performance.start(name2)
     const mark = performance.get(name)
     const mark2 = performance.get(name2)
+    performance.clearAll()
+
+    expect(mark.stop).toBeCalledTimes(1)
+    expect(mark2.stop).toBeCalledTimes(1)
+    expect(performance['benchmarks']).not.toHaveProperty(name)
+    expect(performance['benchmarks']).not.toHaveProperty(name2)
+  })
+
+  it ('can clear all marks even if one is stopped', () => {
+    const performance = new Performance()
+    const name = 'test'
+    const name2 = 'test2'
+
+    performance.start(name)
+    performance.start(name2)
+    performance.stop(name2)
+
+    const mark = performance.get(name)
+    const mark2 = performance.get(name2)
+
+    const mark2Mock = mocked(mark2)
+    mark2Mock.isRunning.mockImplementationOnce(() => false)
+
     performance.clearAll()
 
     expect(mark.stop).toBeCalledTimes(1)

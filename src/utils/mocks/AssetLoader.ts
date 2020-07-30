@@ -18,5 +18,6 @@ export const AssetLoaderMock = () => ({
     runAllServiceSetupFiles: jest.fn(),
     loadAllServiceRoutes: jest.fn(),
     loadAllServiceEvents: jest.fn(),
+    loadServiceAsset: jest.fn(),
   },
 })

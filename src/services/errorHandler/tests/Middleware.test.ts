@@ -19,6 +19,39 @@ describe('Error Middleware: Error handler', () => {
     expect(next).toBeCalledTimes(1)
   })
 
+  it ('it should set the status to 500 if it is 200', async () => {
+    const next = jest.fn(async () => { throw new Error() })
+
+    let ctx = {
+      status: undefined,
+      vision: {},
+    } as any
+
+    await (ErrorHandlerMiddleware.errorHandler())(ctx as any, next)
+
+    expect(ctx.status).toEqual(500)
+
+    ctx = {
+      status: 200,
+      vision: {},
+    } as any
+
+    await (ErrorHandlerMiddleware.errorHandler())(ctx as any, next)
+
+    expect(ctx.status).toEqual(500)
+
+    ctx = {
+      status: 300,
+      vision: {},
+    } as any
+
+    await (ErrorHandlerMiddleware.errorHandler())(ctx as any, next)
+
+    expect(ctx.status).toEqual(500)
+
+    expect(next).toBeCalledTimes(3)
+  })
+
   it ('should catch all errors and add them to the ctx', async () => {
     const next = jest.fn().mockImplementationOnce(() => {
       throw new PayloadError('oh no something went wrong')

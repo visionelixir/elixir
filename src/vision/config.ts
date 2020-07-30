@@ -1,7 +1,7 @@
-import { ElixirConfig } from '../vision/types'
+import { ElixirConf } from '../vision/types'
 import * as path from 'path'
 
-export const ELIXIR_CONFIG: ElixirConfig = {
+export const ELIXIR_CONFIG: ElixirConf = {
   baseDirectory: path.normalize(`${__dirname}/..`),
   configDirectory: 'config',
   services: {
@@ -21,6 +21,7 @@ export const ELIXIR_CONFIG: ElixirConfig = {
       'collector',
       'performance',
       'taskRunner',
+      'config',
     ],
   },
 }
