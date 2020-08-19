@@ -109,7 +109,7 @@ describe('Vision: middleware', () => {
 
     expect(Container.singleton).toBeCalledTimes(1)
     expect(Container.singleton).toBeCalledWith('Loader', Loader)
-    
+
     expect(next).toBeCalledTimes(1)
   })
 
