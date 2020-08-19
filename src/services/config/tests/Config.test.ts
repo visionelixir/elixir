@@ -1,16 +1,17 @@
+import { VisionConfig } from '../../../vision/types'
 import { ElixirConfig } from '../Config'
-import { AssetLoader } from '../../../utils/AssetLoader'
+import { ElixirLoader } from '../../../utils/Loader'
 import { mocked } from 'ts-jest/utils'
 
-jest.mock('../../../utils/AssetLoader', require('../../../utils/mocks/AssetLoader').AssetLoaderMock)
+jest.mock('../../../utils/Loader', require('../../../utils/mocks/Loader').ElixirLoaderMock)
 
-const AssetLoaderMocked = mocked(AssetLoader, true)
+const ElixirLoaderMocked = mocked(new ElixirLoader({} as VisionConfig), true)
 
 beforeEach(jest.clearAllMocks)
 
 describe('Elixir Config', () => {
   it ('should instantiate', () => {
-    const config = new ElixirConfig()
+    const config = new ElixirConfig(new ElixirLoader({} as VisionConfig))
 
     expect(config).toBeInstanceOf(ElixirConfig)
   })
@@ -20,13 +21,13 @@ describe('Elixir Config', () => {
       key: 'value'
     }
 
-    AssetLoaderMocked.loadConfig.mockImplementationOnce(() => myConfig)
+    ElixirLoaderMocked.loadConfig.mockImplementationOnce(() => myConfig)
 
-    const Config = new ElixirConfig()
+    const Config = new ElixirConfig(ElixirLoaderMocked as unknown as ElixirLoader)
 
     const config = Config.get('someName')
 
-    expect(AssetLoaderMocked.loadConfig).toBeCalledTimes(1)
+    expect(ElixirLoaderMocked.loadConfig).toBeCalledTimes(1)
     expect(config).toMatchObject(myConfig)
   })
 
@@ -45,14 +46,14 @@ describe('Elixir Config', () => {
       another: 'value',
     }
 
-    AssetLoaderMocked.loadConfig.mockImplementationOnce(() => myConfig)
-    AssetLoaderMocked.loadServiceAsset.mockImplementationOnce(() => serviceConfig)
+    ElixirLoaderMocked.loadConfig.mockImplementationOnce(() => myConfig)
+    ElixirLoaderMocked.loadServiceAsset.mockImplementationOnce(() => serviceConfig)
 
-    const Config = new ElixirConfig()
+    const Config = new ElixirConfig(ElixirLoaderMocked as unknown as ElixirLoader)
 
     const config = Config.get('someName', 'service')
 
-    expect(AssetLoaderMocked.loadConfig).toBeCalledTimes(1)
+    expect(ElixirLoaderMocked.loadConfig).toBeCalledTimes(1)
     expect(config).toMatchObject(expected)
   })
 })

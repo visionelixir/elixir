@@ -1,24 +1,11 @@
-import { Vision } from '../Vision'
-import { Core, ElixirContainer, ElixirEvent, ElixirEvents, LoggerFacade, VisionElixirEnvironment } from '../..'
-import { TEST_VISION_CONFIG } from '../../test/fixtures/vision/config'
 import { VisionError } from '../../services/errorHandler/VisionError'
-import { EventDispatcherFacade as EventDispatcher } from '../../services/events/facades'
+import { ElixirEmitter } from '../../services/events/Emitter'
+import { TEST_VISION_CONFIG } from '../../test/fixtures/vision/config'
+import { Vision } from '../Vision'
+import { Core, VisionElixirEnvironment } from '../types'
 
-jest.mock('../../services/logger/facades', require('../../services/logger/mocks/facades').LoggerFacadeMock)
-jest.mock('../../services/events/facades', require('../../services/events/mocks/facades').EventDispatcherFacadeMock)
-jest.mock('../../utils/AssetLoader', require('../../utils/mocks/AssetLoader').AssetLoaderMock)
-
-jest.mock('../middleware', () => {
-  return {
-    AppMiddleware: {
-      response: jest.fn(() => () => {}),
-      attachVars: jest.fn(() => () => {}),
-      compress: jest.fn(() => () => {}),
-      serveStatic: jest.fn(() => () => {}),
-      bodyParser: jest.fn(() => () => {})
-    }
-  }
-})
+jest.mock('../../utils/Loader', require('../../utils/mocks/Loader').ElixirLoaderMock)
+jest.mock('../../services/logger/Logger', require('../../services/logger/mocks/Logger').LoggerMock)
 
 beforeEach(jest.clearAllMocks)
 
@@ -33,92 +20,61 @@ describe('Vision: Vision', () => {
 
     expect(vision).toBeInstanceOf(Vision)
     expect(vision.create).toBeCalledTimes(0)
-    expect(vision.getContainer()).toBeInstanceOf(ElixirContainer)
-    expect(vision.getContainer().getService('VisionConfig')).toBeTruthy()
-    expect(vision.getContainer().getService('Vision')).toBeInstanceOf(Object)
     expect(vision.getCore()).toBeInstanceOf(Core)
 
     Vision.prototype.create = visionCreateOriginal
   })
 
-  it ('auto creates if instantiated with a config', () => {
+  it ('calls create if a config is passed', () => {
     const visionCreateOriginal = Vision.prototype.create
     Vision.prototype.create = jest.fn(() => new Promise(resolve => {
       resolve(true)
     })) as any
 
-    const vision = new Vision({} as any)
+    const vision = new Vision(TEST_VISION_CONFIG)
 
     expect(vision).toBeInstanceOf(Vision)
     expect(vision.create).toBeCalledTimes(1)
+    expect(vision.getCore()).toBeInstanceOf(Core)
 
     Vision.prototype.create = visionCreateOriginal
   })
 
-  it ('creates the application', async () => {
-    const visionLoadServicesOriginal = Vision.prototype['loadServices']
-    const visionConfigureMiddlewareOriginal = Vision.prototype['configureMiddleware']
+  it ('can set itself up', () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
 
-    Vision.prototype['loadServices'] = jest.fn() as any
-    Vision.prototype['configureMiddleware'] = jest.fn() as any
+    expect(vision).toBeInstanceOf(Vision)
 
-    const vision = new Vision()
-    await vision.create({} as any)
+    expect(vision.getLoader().runAllServiceFileExports).toBeCalledTimes(4)
 
-    expect(vision.getCore()).toBeDefined()
-    expect(vision['loadServices']).toBeCalledTimes(2)
-    expect(vision['loadServices']).toBeCalledWith(VisionElixirEnvironment.ELIXIR)
-    expect(vision['loadServices']).toBeCalledWith(VisionElixirEnvironment.VISION)
-    expect(EventDispatcher.emit).toBeCalledTimes(2)
-    expect(EventDispatcher.emit).toBeCalledWith(ElixirEvents.INIT_SERVICE_SETUP_PRE, expect.any(ElixirEvent))
-    expect(EventDispatcher.emit).toBeCalledWith(ElixirEvents.INIT_SERVICE_SETUP_POST, expect.any(ElixirEvent))
-    expect(vision['configureMiddleware']).toBeCalledTimes(1)
-
-    Vision.prototype['loadServices'] = visionLoadServicesOriginal
-    Vision.prototype['configureMiddleware'] = visionConfigureMiddlewareOriginal
+    expect(vision.getLoader().runAllServiceFileExports).toHaveBeenCalledWith('boot', VisionElixirEnvironment.ELIXIR, [vision], 'global')
+    expect(vision.getLoader().runAllServiceFileExports).toHaveBeenCalledWith('boot', VisionElixirEnvironment.VISION, [vision], 'global')
+    expect(vision.getLoader().runAllServiceFileExports).toHaveBeenCalledWith('events', VisionElixirEnvironment.ELIXIR, [vision], 'global')
+    expect(vision.getLoader().runAllServiceFileExports).toHaveBeenCalledWith('events', VisionElixirEnvironment.VISION, [vision], 'global')
   })
 
-  it ('can configure middleware', async () => {
-    const coreUse = jest.fn()
-    const vision = new Vision()
+  it ('can return the koa core', () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
 
-    vision['getCore'] = () => ({
-      use: coreUse
-    }) as any
-
-    vision['config'] = {
-      baseDirectory: ''
-    } as any
-
-    await vision['configureMiddleware']()
-
-    expect(EventDispatcher.emit).toBeCalledTimes(1)
-    expect(EventDispatcher.emit).toBeCalledWith(ElixirEvents.INIT_MIDDLEWARE, expect.any(ElixirEvent))
-    expect(coreUse).toBeCalledTimes(5)
+    expect(vision.getCore()).toBeInstanceOf(Core)
   })
 
-  it ('can get the container', () => {
-    const vision = new Vision()
+  it ('can return the config', () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
 
-    const container = vision.getContainer()
-
-    expect(container).toBeInstanceOf(ElixirContainer)
+    expect(vision.getConfig()).toBe(TEST_VISION_CONFIG)
   })
 
-  it ('can get the core', () => {
-    const vision = new Vision()
+  it ('can return the emitter', () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
 
-    const core = vision.getCore()
-
-    expect(core).toBeInstanceOf(Core)
+    expect(vision.getEmitter()).toBeInstanceOf(ElixirEmitter)
   })
 
-  it ('can get the config', () => {
-    const config = TEST_VISION_CONFIG
-    const vision = new Vision(config)
+  it ('can return the loader', () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
 
-    const result = vision.getConfig()
-    expect(result).toBe(config)
+    expect(vision.getLoader()).toBe(vision['loader'])
   })
 
   it ('can serve', async () => {
@@ -126,7 +82,7 @@ describe('Vision: Vision', () => {
 
     await vision.up()
 
-    expect(vision.getStatus()).toEqual(true)
+    expect(vision.getStatus()).toBe(true)
 
     await vision.down()
   })
@@ -135,28 +91,6 @@ describe('Vision: Vision', () => {
     const vision = new Vision()
 
     await expect(vision.up()).rejects.toThrowError(VisionError)
-  })
-
-  it ('logs if there is an error serving', async () => {
-    const vision = new Vision(TEST_VISION_CONFIG)
-
-    await vision.up()
-
-    vision['server'].emit('error', new Error('failed'))
-
-    expect(LoggerFacade.error).toBeCalledTimes(1)
-
-    await vision.down()
-  })
-
-  it ('logs if there is no error serving', async () => {
-    const vision = new Vision(TEST_VISION_CONFIG)
-
-    await vision.up()
-
-    expect(LoggerFacade.info).toBeCalledTimes(1)
-
-    await vision.down()
   })
 
   it ('can get the status', async () => {
@@ -186,4 +120,19 @@ describe('Vision: Vision', () => {
     vision['server'].close = originalClose
     await vision.down()
   })
+
+  it ('logs if there is an error serving', async () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
+
+    const loggerSpy = jest.spyOn(vision['logger'], 'error')
+
+    await vision.up()
+
+    vision['server'].emit('error', new Error('failed'))
+
+    expect(loggerSpy).toBeCalledTimes(1)
+
+    await vision.down()
+  })
+
 })

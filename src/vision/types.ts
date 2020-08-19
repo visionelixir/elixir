@@ -14,12 +14,15 @@ export enum AppEnvironment {
 export enum ElixirEvents {
   INIT_SERVICE_SETUP_PRE = 'Elixir:Init:Service.Setup.Pre',
   INIT_SERVICE_SETUP_POST = 'Elixir:Init:Service.Setup.Post',
-  INIT_MIDDLEWARE = 'Elixir:Init:Middleware',
-  INIT_VARS = 'Elixir:Init:Vars',
   RESPONSE_PRE = 'Elixir:Response:Pre',
   RESPONSE_POST = 'Elixir:Response:Post',
   RESPONSE_ERROR = 'Elixir:Response:Error',
   APP_DATA = 'Elixir:Data',
+  INIT_VARS = 'Elixir:Init:Vars',
+}
+
+export enum ElixirGlobalEvents {
+  INIT_MIDDLEWARE = 'Elixir:Init:Middleware',
 }
 
 export enum VisionElixirEnvironment {
@@ -35,7 +38,8 @@ export interface KeyValue {
 export interface ServicesConfig {
   eventFile: string
   routeFile: string
-  setupFile: string
+  registerFile: string
+  bootFile: string
   directory: string
   require: Array<string>
 }

@@ -1,10 +1,8 @@
 import { Pool } from 'pg'
 import * as _ from 'lodash'
 import { DatabaseConnectionConfig } from './types'
-import { EventDispatcherFacade as EventDispatcher } from '../events/facades'
-import { KeyValue, ElixirEvents } from '../../vision/types'
+import { KeyValue } from '../../vision/types'
 import { DatabaseError } from './DatabaseError'
-import { ElixirEvent } from '../events/Event'
 
 export class Pg {
   protected pool: Pool
@@ -59,7 +57,7 @@ export class Pg {
 
         return record
       })
-
+      /* @todo reimplement
       if (EventDispatcher.isRegistered) {
         await EventDispatcher.emit(
           ElixirEvents.APP_DATA,
@@ -68,7 +66,7 @@ export class Pg {
             payload: { query, params },
           }),
         )
-      }
+      }*/
 
       return formatted
     } catch (error) {

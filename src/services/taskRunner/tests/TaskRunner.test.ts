@@ -104,12 +104,17 @@ describe('TaskRunner: TaskRunner', () => {
   it ('errors if next is called more than once', async () => {
     const taskRunner = new TaskRunner()
 
-    taskRunner.use(async (_ctx, next) => {
+    const myMiddleware = async (_ctx: any, next: any) => {
       await next()
       await next()
-    })
+    }
 
-    await expect(taskRunner.run()).rejects.toThrow(Error)
+    taskRunner
+      .use(myMiddleware)
+
+    await expect(
+      taskRunner.run()
+    ).rejects.toThrow(Error)
   })
 
   it ('rejects if the middleware errors', async () => {

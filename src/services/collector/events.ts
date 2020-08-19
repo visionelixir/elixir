@@ -1,51 +1,41 @@
 import { ElixirEvent } from '../events/Event'
-import { ElixirEvents } from '../../vision/types'
-import { LoggerFacade as Logger } from '../logger/facades'
-import { EventDispatcherFacade as EventDispatcher } from '../events/facades'
-import { CollectorFacade as Collector } from '../collector/facades'
+import { Context, ElixirEvents } from '../../vision/types'
+import { Emitter as IEmitter } from '../events/types'
+import { Logger as ILogger } from '../logger/types'
+import { Collector as ICollector } from './types'
 
-/**
- * App Data
- * Adds app data to the collector
- */
-export const appDataHandler = async (event: ElixirEvent): Promise<void> => {
-  const { collection, payload } = event.getData()
-  Collector.add(collection, payload)
+export default (ctx: Context): void => {
+  const {
+    Emitter,
+    Logger,
+    Collector,
+  }: {
+    Emitter: IEmitter
+    Logger: ILogger
+    Collector: ICollector
+  } = ctx.elixir.services('Emitter', 'Logger', 'Collector')
+
+  Emitter.on(ElixirEvents.APP_DATA, (event: ElixirEvent) => {
+    const { collection, payload } = event.getData()
+    Collector.add(collection, payload)
+  })
+
+  // @todo this should be removed from here into the vision to be handled
+  //  how the developer wants
+  Emitter.on(ElixirEvents.RESPONSE_POST, async (event: ElixirEvent) => {
+    const { ctx } = event.getData()
+    const { method, url } = ctx.request
+    const { status } = ctx.response
+
+    await Emitter.emit(
+      ElixirEvents.APP_DATA,
+      new ElixirEvent({
+        collection: 'request',
+        payload: { method, url, status },
+      }),
+    )
+
+    Logger.info('Request Data:')
+    Logger.debug(Collector.all())
+  })
 }
-
-EventDispatcher.on(ElixirEvents.APP_DATA, appDataHandler)
-
-/**
- * Response Pre
- * Clears the collector on each request
- */
-export const responsePreHandler = async (): Promise<void> => {
-  Collector.clear()
-}
-
-EventDispatcher.on(ElixirEvents.RESPONSE_PRE, responsePreHandler)
-
-/**
- * Response Post
- * Outputs the collector data
- */
-export const responsePostHandler = async (
-  event: ElixirEvent,
-): Promise<void> => {
-  const { ctx } = event.getData()
-  const { method, url } = ctx.request
-  const { status } = ctx.response
-
-  await EventDispatcher.emit(
-    ElixirEvents.APP_DATA,
-    new ElixirEvent({
-      collection: 'request',
-      payload: { method, url, status },
-    }),
-  )
-
-  Logger.info('Request Data:')
-  Logger.debug(Collector.all())
-}
-
-EventDispatcher.on(ElixirEvents.RESPONSE_POST, responsePostHandler)

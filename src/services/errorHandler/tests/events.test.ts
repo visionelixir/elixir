@@ -1,37 +1,58 @@
-import { ElixirEvent } from '../../events/Event'
-import { EventDispatcherFacade } from '../../events/facades'
+import { ElixirGlobalEvents } from '../../../vision/types'
+import { global } from '../events'
 
-jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
+/**
+ * Mocks
+ */
+const Emitter: {handlers: any[], events: string[], on: any, emit: any} = {
+  handlers: [],
+  events: [],
+  on: jest.fn((event: any, handler: any) => {
+    Emitter.handlers.push(handler)
+    Emitter.events.push(event)
+  }),
+  emit: jest.fn()
+}
 
-let passedCallback: any = null
+const Vision = {
+  getEmitter: () => Emitter
+} as any
 
-jest.mock('../Middleware', () => ({
-  ErrorHandlerMiddleware: {
-    errorHandler: () => 'error middleware'
-  }
-}))
+beforeEach(() => {
+  Emitter.handlers = []
+  Emitter.events = []
+  jest.clearAllMocks()
+})
 
-afterEach(jest.clearAllMocks)
+/**
+ * Tests
+ */
+describe('ErrorHandler: Events', () => {
+  it('exports a function', () => {
+    expect(global).toBeInstanceOf(Function)
+  })
 
-describe('Error Middleware: Error handler', () => {
-  it ('should add the middleware and should listen to the event', async () => {
-    // @ts-ignore
-    EventDispatcherFacade.on.mockImplementationOnce((_event, callback) => {
-      passedCallback = callback
-    })
+  it('registers the events', () => {
+    global(Vision)
 
-    require('../events')
+    expect(Emitter.on).toBeCalledTimes(1)
+  })
 
-    expect(passedCallback).not.toBeNull()
+  it('handles the INIT_MIDDLEWARE event', () => {
+    global(Vision)
 
-    const data = {
-      middlewareStack: [ () => {}, () => {} ]
+    const handler = Emitter.handlers[Emitter.events.indexOf(ElixirGlobalEvents.INIT_MIDDLEWARE)]
+
+    const middlewareStack = { unshift: jest.fn() }
+
+    const event = {
+      getData: () => ({
+        middlewareStack,
+      })
     }
 
-    await passedCallback(new ElixirEvent(data))
+    handler(event as any)
 
-    expect(data.middlewareStack).toHaveLength(3)
-    expect(data.middlewareStack[0]).toEqual('error middleware')
-    expect(EventDispatcherFacade.on).toBeCalledTimes(1)
+    expect(middlewareStack.unshift).toBeCalledTimes(1)
   })
 })

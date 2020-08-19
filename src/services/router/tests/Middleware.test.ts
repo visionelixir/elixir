@@ -1,6 +1,13 @@
 import { RouterMiddleware } from '../Middleware'
 
-jest.mock('../facades', require('../mocks/facades').RouterFacadeMock)
+jest.mock('../boot', () => ({
+  RouterInstance: {
+    getCore: jest.fn(() => ({
+      routes: jest.fn(() => ({})),
+      allowedMethods: jest.fn(() => ({})),
+    }))
+  }
+}))
 
 describe('Router: Middleware', () => {
   it ('returns a named function from loadRoutes', () => {

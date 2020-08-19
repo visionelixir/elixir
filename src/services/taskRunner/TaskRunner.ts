@@ -1,15 +1,18 @@
 import { KeyValue, Next } from '../../vision/types'
-import { LoggerFacade as Logger } from '../logger/facades'
+import { ElixirLogger } from '../logger/Logger'
+import { Logger } from '../logger/types'
 import { TaskMiddleware } from './types'
 
 export class TaskRunner {
   protected env: string
   protected middleware: TaskMiddleware[]
   protected context: KeyValue
+  protected logger: Logger
 
   constructor() {
     this.middleware = []
     this.context = {}
+    this.logger = new ElixirLogger()
   }
 
   public use(fn: (context: KeyValue, next: Next) => void): TaskRunner {
@@ -26,7 +29,7 @@ export class TaskRunner {
     const ctx = {}
 
     await fn(ctx).catch((error: Error) => {
-      Logger.error(error)
+      throw error
     })
   }
 

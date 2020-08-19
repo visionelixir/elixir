@@ -2,19 +2,50 @@ import { ErrorHandlerMiddleware } from '../Middleware'
 import { PayloadError } from '../PayloadError'
 import { ElixirError } from '../ElixirError'
 import { ElixirEvents } from '../../../vision/types'
-import { LoggerFacade } from '../../logger/facades'
-import { EventDispatcherFacade } from '../../events/facades'
 
-jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
-jest.mock('../../logger/facades', require('../../logger/mocks/facades').LoggerFacadeMock)
+/**
+ * Mock the services
+ */
+
+const Emitter = {
+  emit: jest.fn(),
+}
+
+const Logger = {
+  error: jest.fn(),
+  info: jest.fn(),
+  debug: jest.fn(),
+}
+
+const elixir = {
+  services: jest.fn((...args) => {
+    if (args[0] === 'Emitter') {
+      return Emitter
+    }
+
+    if (args[0] === 'Logger') {
+      return Logger
+    }
+
+    return { Emitter, Logger }
+  })
+}
 
 afterEach(jest.clearAllMocks)
+
+/**
+ * Tests
+ */
 
 describe('Error Middleware: Error handler', () => {
   it ('it should do nothing if there are no errors', async () => {
     const next = jest.fn()
 
-    await (ErrorHandlerMiddleware.errorHandler())({} as any, next)
+    const ctx = {
+      elixir
+    }
+
+    await (ErrorHandlerMiddleware.errorHandler())(ctx as any, next)
 
     expect(next).toBeCalledTimes(1)
   })
@@ -25,6 +56,7 @@ describe('Error Middleware: Error handler', () => {
     let ctx = {
       status: undefined,
       vision: {},
+      elixir
     } as any
 
     await (ErrorHandlerMiddleware.errorHandler())(ctx as any, next)
@@ -34,6 +66,7 @@ describe('Error Middleware: Error handler', () => {
     ctx = {
       status: 200,
       vision: {},
+      elixir
     } as any
 
     await (ErrorHandlerMiddleware.errorHandler())(ctx as any, next)
@@ -43,6 +76,7 @@ describe('Error Middleware: Error handler', () => {
     ctx = {
       status: 300,
       vision: {},
+      elixir
     } as any
 
     await (ErrorHandlerMiddleware.errorHandler())(ctx as any, next)
@@ -107,90 +141,104 @@ describe('Error Middleware: Error handler', () => {
   })
 
   it ('should log the error', () => {
-    ErrorHandlerMiddleware['log'](new PayloadError('my error', null), {
+    const ctx = {
+      elixir,
       method: 'GET',
       url: 'http://someurl.com',
-    } as any)
+    }
 
-    expect(LoggerFacade.error).toBeCalledTimes(1)
-    expect(LoggerFacade.info).toBeCalledTimes(1)
-    expect(LoggerFacade.debug).toBeCalledTimes(1)
+    ErrorHandlerMiddleware['log'](new PayloadError('my error', null), ctx as any)
+
+    expect(Logger.error).toBeCalledTimes(1)
+    expect(Logger.info).toBeCalledTimes(1)
+    expect(Logger.debug).toBeCalledTimes(1)
   })
 
   it ('should log the error payload', () => {
-    ErrorHandlerMiddleware['log'](new PayloadError('my error', 'payload'), {
+    const ctx = {
+      elixir,
       method: 'GET',
       url: 'http://someurl.com',
-    } as any)
+    }
 
-    expect(LoggerFacade.error).toBeCalledTimes(1)
-    expect(LoggerFacade.info).toBeCalledTimes(1)
-    expect(LoggerFacade.debug).toBeCalledTimes(2)
+    ErrorHandlerMiddleware['log'](new PayloadError('my error', 'payload'), ctx as any)
+
+    expect(Logger.error).toBeCalledTimes(1)
+    expect(Logger.info).toBeCalledTimes(1)
+    expect(Logger.debug).toBeCalledTimes(2)
   })
 
   it ('should emit the error event for error codes 4xx & 5xx', async () => {
+    const ctx = {
+      elixir
+    }
+
     await ErrorHandlerMiddleware['emitEvent'](
       {} as any,
       500,
       new ElixirError('some error', 'some payload'),
-      {} as any
+      ctx as any
     )
 
-    expect(EventDispatcherFacade.emit).toBeCalledTimes(1)
-    expect(EventDispatcherFacade.emit).toBeCalledWith(
+    expect(Emitter.emit).toBeCalledTimes(1)
+    expect(Emitter.emit).toBeCalledWith(
       ElixirEvents.RESPONSE_ERROR,
       {
-        "data": {
-          "ctx": {},
-          "error": new ElixirError('some error'),
-          "status": 500,
-          "vision": {}
+        data: {
+          ctx,
+          error: new ElixirError('some error'),
+          status: 500,
+          vision: {}
         },
-        "name": "event"
+        name: 'event'
       }
     )
 
-    jest.resetAllMocks()
+    jest.clearAllMocks()
 
     await ErrorHandlerMiddleware['emitEvent'](
       {} as any,
       404,
       new ElixirError('some error', 'some payload'),
-      {} as any
+      ctx as any
     )
 
-    expect(EventDispatcherFacade.emit).toBeCalledTimes(1)
-    expect(EventDispatcherFacade.emit).toBeCalledWith(
+    expect(Emitter.emit).toBeCalledTimes(1)
+    expect(Emitter.emit).toBeCalledWith(
       ElixirEvents.RESPONSE_ERROR,
       {
-        "data": {
-          "ctx": {},
-          "error": new ElixirError('some error'),
-          "status": 404,
-          "vision": {}
+        data: {
+          ctx,
+          error: new ElixirError('some error'),
+          status: 404,
+          vision: {}
         },
-        "name": "event"
+        name: 'event'
       }
     )
   })
 
   it ('should not emit the error event for error codes 2xx & 3xx', async () => {
+    const ctx = {
+      elixir,
+    }
+
     await ErrorHandlerMiddleware['emitEvent'](
       {} as any,
       200,
       new ElixirError('some error', 'some payload'),
-      {} as any
+      ctx as any
     )
 
-    expect(EventDispatcherFacade.emit).not.toBeCalled()
+    expect(Emitter.emit).not.toBeCalled()
 
     await ErrorHandlerMiddleware['emitEvent'](
       {} as any,
       301,
       new ElixirError('some error', 'some payload'),
-      {} as any
+      ctx as any
     )
 
-    expect(EventDispatcherFacade.emit).not.toBeCalled()
+    expect(Emitter.emit).not.toBeCalled()
   })
 })

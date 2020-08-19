@@ -6,8 +6,8 @@ import {
   ElixirEvents,
 } from '../../vision/types'
 import { ElixirEvent } from '../events/Event'
-import { LoggerFacade as Logger } from '../logger/facades'
-import { EventDispatcherFacade as EventDispatcher } from '../events/facades'
+import { Emitter as IEmitter } from '../events/types'
+import { Logger as ILogger } from '../logger/types'
 import { PayloadError } from './PayloadError'
 import { ElixirError } from './ElixirError'
 import { Vision } from '../../vision/Vision'
@@ -50,12 +50,14 @@ export class ErrorHandlerMiddleware {
     error: PayloadError,
     ctx: Context,
   ): Promise<void> {
+    const Emitter: IEmitter = ctx.elixir.services('Emitter')
+
     if (
       status !== undefined &&
       !String(status).startsWith('2') &&
       !String(status).startsWith('3')
     ) {
-      await EventDispatcher.emit(
+      await Emitter.emit(
         ElixirEvents.RESPONSE_ERROR,
         new ElixirEvent({
           vision,
@@ -70,6 +72,7 @@ export class ErrorHandlerMiddleware {
   protected static log(error: PayloadError, ctx: Context): void {
     const { method, url } = ctx
     const { type, name, message, payload } = error
+    const Logger: ILogger = ctx.elixir.services('Logger')
 
     Logger.error(`[${type}] ${name}: ${message}`)
     Logger.info(`[${method}] ${url}`)

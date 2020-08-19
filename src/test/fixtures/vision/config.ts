@@ -20,7 +20,8 @@ export const TEST_VISION_CONFIG: VisionConfig = {
   baseDirectory: path.normalize(`${__dirname}`),
 
   services: {
-    setupFile: 'Setup',
+    bootFile: 'boot',
+    registerFile: 'register',
     eventFile: 'events',
     routeFile: 'routes',
     directory: 'services',

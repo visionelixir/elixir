@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest'
+import { mocked } from 'ts-jest/utils'
 import { ElixirPerformance as Performance } from '../Performance'
 import { PerformanceError } from '../PerformanceError'
 

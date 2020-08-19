@@ -25,6 +25,6 @@ export interface Container {
     force?: boolean,
   ): Container
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  resolve(name: string): any
+  resolve(...serviceNames: string[]): any
   getService(name: string): ContainerService
 }

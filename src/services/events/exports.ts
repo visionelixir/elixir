@@ -1,4 +1,3 @@
 export { ElixirEvent } from './Event'
-export { ElixirEventDispatcher } from './EventDispatcher'
+export { ElixirEmitter } from './Emitter'
 export * from './types'
-export * from './facades'

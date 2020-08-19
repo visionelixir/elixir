@@ -1,28 +1,30 @@
 import * as http from 'http'
 import { Server } from 'http'
-
+import { Middleware } from 'koa'
+import { VisionError } from '../services/errorHandler/VisionError'
+import { ElixirEmitter } from '../services/events/Emitter'
+import { ElixirEvent } from '../services/events/Event'
+import { Emitter } from '../services/events/types'
+import { ElixirLogger } from '../services/logger/Logger'
+import { Logger } from '../services/logger/types'
+import { ElixirLoader } from '../utils/Loader'
+import { ELIXIR_CONFIG } from './config'
+import { AppMiddleware } from './middleware'
 import {
   Core,
-  ElixirEvents,
+  ElixirGlobalEvents,
   VisionConfig,
   VisionElixirEnvironment,
 } from './types'
-import { Container } from '../services/container/types'
-import { ElixirContainer } from '../services/container/Container'
-import { ElixirEvent } from '../services/events/Event'
-import { AppMiddleware } from './middleware'
-import { Middleware } from 'koa'
-import { VisionError } from '../services/errorHandler/VisionError'
-import { EventDispatcherFacade as EventDispatcher } from '../services/events/facades'
-import { LoggerFacade as Logger } from '../services/logger/facades'
-import { AssetLoader } from '../utils/AssetLoader'
 
 export class Vision {
   protected core: Core
   protected config: VisionConfig
-  protected container: Container
+  protected loader: ElixirLoader
   protected server: Server
   protected isServed: boolean
+  protected logger: Logger
+  protected emitter: Emitter
 
   /**
    * Constructor
@@ -32,13 +34,11 @@ export class Vision {
   constructor(config?: VisionConfig) {
     this.isServed = false
     this.core = new Core()
-    this.container = new ElixirContainer()
-    this.container.singleton('VisionConfig', config).singleton('Vision', this)
+    this.logger = new ElixirLogger()
+    this.emitter = new ElixirEmitter()
 
     if (config) {
-      this.create(config).then(() => {
-        // party!
-      })
+      this.create(config)
     }
   }
 
@@ -47,7 +47,7 @@ export class Vision {
    * Called when an error occurs serving the vision
    */
   protected errored(error: Error): Vision {
-    Logger.error('Error serving application', error)
+    this.logger.error('Error serving application', error)
 
     return this
   }
@@ -61,7 +61,7 @@ export class Vision {
 
     this.isServed = true
 
-    Logger.info(
+    this.logger.info(
       'Welcome to your vision',
       `Running app: ${name}`,
       `http://${host}:${port}`,
@@ -71,39 +71,58 @@ export class Vision {
   }
 
   /**
-   * Load Services
-   * Loads the elixir services or the vision services
+   * Create
+   * Bootstraps the vision so it can be served
    */
-  protected loadServices(environment: VisionElixirEnvironment): Vision {
-    AssetLoader.runAllServiceSetupFiles(environment)
+  public create(config: VisionConfig): Vision {
+    this.config = config
+    this.loader = new ElixirLoader(config)
+
+    this.loadAppBoot().loadAppEvents().configureMiddleware()
 
     return this
   }
 
   /**
-   * Create
-   * Bootstraps the vision so it can be served
+   * Load App Boot
    */
-  public async create(config: VisionConfig): Promise<Vision> {
-    this.config = config
-
-    // load the elixir services
-    this.loadServices(VisionElixirEnvironment.ELIXIR)
-
-    await EventDispatcher.emit(
-      ElixirEvents.INIT_SERVICE_SETUP_PRE,
-      new ElixirEvent({ vision: this, config }),
+  protected loadAppBoot(): Vision {
+    this.loader.runAllServiceFileExports(
+      ELIXIR_CONFIG.services.bootFile,
+      VisionElixirEnvironment.ELIXIR,
+      [this],
+      'global',
     )
 
-    // load the vision services
-    this.loadServices(VisionElixirEnvironment.VISION)
-
-    await EventDispatcher.emit(
-      ElixirEvents.INIT_SERVICE_SETUP_POST,
-      new ElixirEvent({ vision: this, config }),
+    this.loader.runAllServiceFileExports(
+      this.config.services.bootFile,
+      VisionElixirEnvironment.VISION,
+      [this],
+      'global',
     )
 
-    await this.configureMiddleware()
+    return this
+  }
+
+  /**
+   * Load App Events
+   *
+   * Loads any existing app level events
+   */
+  protected loadAppEvents(): Vision {
+    this.loader.runAllServiceFileExports(
+      ELIXIR_CONFIG.services.eventFile,
+      VisionElixirEnvironment.ELIXIR,
+      [this],
+      'global',
+    )
+
+    this.loader.runAllServiceFileExports(
+      this.config.services.eventFile,
+      VisionElixirEnvironment.VISION,
+      [this],
+      'global',
+    )
 
     return this
   }
@@ -111,17 +130,21 @@ export class Vision {
   /**
    * Configure Middleware
    */
-  protected async configureMiddleware(): Promise<Vision> {
+  protected configureMiddleware(): Vision {
     const middlewareStack = [
+      AppMiddleware.setupContext(this.config),
+      AppMiddleware.setupContainer(),
+      AppMiddleware.setupLoader(this.loader),
+      AppMiddleware.loadServices(),
       AppMiddleware.response(),
-      AppMiddleware.attachVars(this),
       AppMiddleware.compress(),
       AppMiddleware.serveStatic(`${this.getConfig().baseDirectory}/public`),
+      AppMiddleware.attachVars(this),
       AppMiddleware.bodyParser(),
     ]
 
-    await EventDispatcher.emit(
-      ElixirEvents.INIT_MIDDLEWARE,
+    this.emitter.emit(
+      ElixirGlobalEvents.INIT_MIDDLEWARE,
       new ElixirEvent({ vision: this, middlewareStack }),
     )
 
@@ -130,14 +153,6 @@ export class Vision {
     })
 
     return this
-  }
-
-  /**
-   * Get Container
-   * Returns the default containers
-   */
-  public getContainer(): Container {
-    return this.container
   }
 
   /**
@@ -154,6 +169,22 @@ export class Vision {
    */
   public getConfig(): VisionConfig {
     return this.config
+  }
+
+  /**
+   * Get Emitter
+   * Returns the app emitter
+   */
+  public getEmitter(): Emitter {
+    return this.emitter
+  }
+
+  /**
+   * Get Loader
+   * Returns the loader
+   */
+  public getLoader(): ElixirLoader {
+    return this.loader
   }
 
   /**

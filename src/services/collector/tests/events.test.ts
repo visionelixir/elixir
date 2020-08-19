@@ -1,48 +1,104 @@
-import { appDataHandler, responsePostHandler, responsePreHandler } from '../events'
-import { CollectorFacade } from '../facades'
-import { EventDispatcherFacade } from '../../events/facades'
-import { ElixirEvent } from '../../events/Event'
-import { LoggerFacade } from '../../logger/facades'
 import { ElixirEvents } from '../../../vision/types'
+import { ElixirEvent } from '../../events/Event'
+import events from '../events'
 
-const ctx = {
-  request: { method: 'GET', url: '/' },
-  response: { status: 200 }
+/**
+ * Mocks
+ */
+const Emitter: {handlers: any[], events: string[], on: any, emit: any} = {
+  handlers: [],
+  events: [],
+  on: jest.fn((event: any, handler: any) => {
+    Emitter.handlers.push(handler)
+    Emitter.events.push(event)
+  }),
+  emit: jest.fn()
 }
 
-jest.mock('../facades', require('../mocks/facades').CollectorFacadeMock)
-jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
-jest.mock('../../logger/facades', require('../../logger/mocks/facades').LoggerFacadeMock)
+const Logger = {
+  info: jest.fn(),
+  debug: jest.fn(),
+}
 
-afterEach(jest.resetAllMocks)
+const Collector = {
+  add: jest.fn(),
+  all: jest.fn(),
+}
 
-describe('Elixir Collector Events', () => {
-  it ('should handle app data event', async () => {
-    const collection = 'collection'
-    const payload = 'payload'
-    const event = { getData: () => ({ collection, payload }) } as any
+const ctx = {
+  elixir: {
+    services: () => ({
+      Emitter,
+      Collector,
+      Logger
+    })
+  },
+  request: {
+    method: 'GET',
+    url: 'some/url'
+  },
+  response: {
+    status: 200
+  }
+} as any
 
-    await appDataHandler(event)
+beforeEach(() => {
+  Emitter.handlers = []
+  Emitter.events = []
+  jest.clearAllMocks()
+})
 
-    expect(CollectorFacade.add).toBeCalledTimes(1)
-    expect(CollectorFacade.add).toBeCalledWith(collection, payload)
+/**
+ * Tests
+ */
+describe('Collector: Events', () => {
+  it('exports a function', () => {
+    expect(events).toBeInstanceOf(Function)
   })
 
-  it ('should handle response pre event', async () => {
-    await responsePreHandler()
+  it('registers the events', () => {
+    events(ctx)
 
-    expect(CollectorFacade.clear).toBeCalledTimes(1)
+    expect(Emitter.on).toBeCalledTimes(2)
   })
 
-  it ('should handle response post event', async () => {
-    const event = { getData: () => ({ ctx }) } as any
+  it('handles the APP_DATA event', () => {
+    events(ctx)
 
-    await responsePostHandler(event)
+    const handler = Emitter.handlers[Emitter.events.indexOf(ElixirEvents.APP_DATA)]
 
-    expect(EventDispatcherFacade.emit).toBeCalledTimes(1)
-    expect(EventDispatcherFacade.emit).toBeCalledWith(ElixirEvents.APP_DATA, expect.any(ElixirEvent))
-    expect(LoggerFacade.info).toBeCalledTimes(1)
-    expect(LoggerFacade.debug).toBeCalledTimes(1)
-    expect(CollectorFacade.all).toBeCalledTimes(1)
+    const event = {
+      getData: () => ({
+        collection: 'some collection',
+        payload: 'some payload',
+      })
+    }
+
+    handler(event as any)
+
+    expect(Collector.add).toBeCalledTimes(1)
+    expect(Collector.add).toBeCalledWith('some collection', 'some payload')
+  })
+
+  it('handles the RESPONSE_POST event', async () => {
+    events(ctx)
+
+    const handler = Emitter.handlers[Emitter.events.indexOf(ElixirEvents.RESPONSE_POST)]
+
+    const event = {
+      getData: () => ({
+        ctx,
+      })
+    }
+
+    await handler(event as any)
+
+    expect(Emitter.emit).toBeCalledTimes(1)
+    expect(Emitter.emit).toBeCalledWith(ElixirEvents.APP_DATA, expect.any(ElixirEvent))
+
+    expect(Logger.info).toBeCalledTimes(1)
+    expect(Logger.debug).toBeCalledTimes(1)
+
+    expect(Collector.all).toBeCalledTimes(1)
   })
 })

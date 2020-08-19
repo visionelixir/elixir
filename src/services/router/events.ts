@@ -1,5 +1,19 @@
-import { ElixirEvents } from '../../vision/types'
-import { EventDispatcherFacade as EventDispatcher } from '../events/facades'
-import { initMiddleware } from './listeners/initMiddleware'
+import { Context, ElixirGlobalEvents, Middleware } from '../../vision/types'
+import { Vision } from '../../vision/Vision'
+import { ElixirEvent } from '../events/Event'
+import { RouterMiddleware } from './Middleware'
 
-EventDispatcher.on(ElixirEvents.INIT_MIDDLEWARE, initMiddleware)
+export const global = (vision: Vision): void => {
+  const emitter = vision.getEmitter()
+  emitter.on(
+    ElixirGlobalEvents.INIT_MIDDLEWARE,
+    async (event: ElixirEvent): Promise<void> => {
+      const {
+        middlewareStack,
+      }: { middlewareStack: Middleware[]; ctx: Context } = event.getData()
+
+      middlewareStack.push(RouterMiddleware.attachRoutes())
+      middlewareStack.push(RouterMiddleware.allowedMethods())
+    },
+  )
+}

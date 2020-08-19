@@ -1,9 +1,13 @@
-export interface EventDispatcher {
-  on: (event: string, callback: EventCallback) => EventDispatcher
-  off: (event: string, callback: EventCallback) => EventDispatcher
-  getCallbacks: (event: string) => EventCallback[]
-  emit: (eventName: string, eventInstance: Event) => Promise<void>
-  isRegistered: boolean
+export interface Emitter {
+  on: (event: string, callback: EventListener, scope?: EventScope) => Emitter
+  off: (event: string, callback: EventListener, scope?: EventScope) => Emitter
+  getListeners: (event: string, scope?: EventScope) => EventListener[]
+  emit: (eventName: string, eventInstance: Event, scope?: EventScope) => Emitter
+}
+
+export enum EventScope {
+  GLOBAL = 'global',
+  LOCAL = 'local',
 }
 
 export interface Event {
@@ -15,10 +19,6 @@ export interface Event {
   getData(): any
 }
 
-export interface Events {
-  [key: string]: Array<EventCallback>
-}
-
-export interface EventCallback {
-  (event: Event): Promise<void>
+export interface EventListener {
+  (event: Event): void
 }

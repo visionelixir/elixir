@@ -6,14 +6,16 @@ export const ELIXIR_CONFIG: ElixirConf = {
   configDirectory: 'config',
   services: {
     eventFile: 'events',
-    setupFile: 'Setup',
+    registerFile: 'register',
+    bootFile: 'boot',
     directory: 'services',
     routeFile: 'routes',
     require: [
       'container',
+      'loader',
       'logger',
+      'config',
       'events',
-      'app',
       'errorHandler',
       'database',
       'router',
@@ -21,7 +23,6 @@ export const ELIXIR_CONFIG: ElixirConf = {
       'collector',
       'performance',
       'taskRunner',
-      'config',
     ],
   },
 }

@@ -4,8 +4,8 @@ export enum DatabaseConnectionTypes {
   PG = 'PG',
 }
 
-export interface DatabaseManager {
-  add(name: string, instance: Pg): DatabaseManager
+export interface Database {
+  add(name: string, instance: Pg): Database
   get(name?: string): Pg
   all(): { [key: string]: Pg }
 }

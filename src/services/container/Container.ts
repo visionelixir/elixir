@@ -1,5 +1,5 @@
+import { KeyValue } from '../../vision/types'
 import { Class, ContainerService, ContainerTypes, Container } from './types'
-import { ContainerManager } from './ContainerManager'
 import { ContainerError } from './ContainerError'
 
 export class ElixirContainer implements Container {
@@ -8,7 +8,8 @@ export class ElixirContainer implements Container {
 
   constructor(name = 'default') {
     this.name = name
-    ContainerManager.set(name, this)
+
+    this.singleton('Container', this)
   }
 
   public getName(): string {
@@ -54,15 +55,28 @@ export class ElixirContainer implements Container {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public resolve(name: string): any {
-    const service = this.getService(name)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+  public resolve(service: string): any
+  public resolve(...args: string[]): KeyValue
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+  public resolve(...args: string[]): KeyValue | any {
+    const requested: KeyValue = {}
 
-    if (service.type === ContainerTypes.SINGLETON) {
-      return service.object
-    } else {
-      return new service.object()
+    args.map((serviceName) => {
+      const resolved = this.getService(serviceName)
+
+      if (resolved.type === ContainerTypes.SINGLETON) {
+        requested[serviceName] = resolved.object
+      } else {
+        requested[serviceName] = new resolved.object()
+      }
+    })
+
+    if (args.length === 1) {
+      return requested[args[0]]
     }
+
+    return requested
   }
 
   public getService(name: string): ContainerService {

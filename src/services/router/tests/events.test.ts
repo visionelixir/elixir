@@ -1,13 +1,58 @@
-import { ElixirEvents } from '../../../vision/types'
-import { EventDispatcherFacade } from '../../events/facades'
+import { ElixirGlobalEvents } from '../../../vision/types'
+import { global } from '../events'
 
-jest.mock('../../events/facades', require('../../events/mocks/facades').EventDispatcherFacadeMock)
+/**
+ * Mocks
+ */
+const Emitter: {handlers: any[], events: string[], on: any, emit: any} = {
+  handlers: [],
+  events: [],
+  on: jest.fn((event: any, handler: any) => {
+    Emitter.handlers.push(handler)
+    Emitter.events.push(event)
+  }),
+  emit: jest.fn()
+}
 
-describe('Router: Events', () => {
-  it ('attaches the events', async () => {
-    require('../events')
+const Vision = {
+  getEmitter: () => Emitter
+} as any
 
-    expect(EventDispatcherFacade.on).toBeCalledTimes(1)
-    expect(EventDispatcherFacade.on).toBeCalledWith(ElixirEvents.INIT_MIDDLEWARE, expect.any(Function))
+beforeEach(() => {
+  Emitter.handlers = []
+  Emitter.events = []
+  jest.clearAllMocks()
+})
+
+/**
+ * Tests
+ */
+describe('Collector: Events', () => {
+  it('exports a function as global', () => {
+    expect(global).toBeInstanceOf(Function)
+  })
+
+  it('registers the events', () => {
+    global(Vision)
+
+    expect(Emitter.on).toBeCalledTimes(1)
+  })
+
+  it('handles the INIT_MIDDLEWARE event', () => {
+    global(Vision)
+
+    const handler = Emitter.handlers[Emitter.events.indexOf(ElixirGlobalEvents.INIT_MIDDLEWARE)]
+
+    const middlewareStack = { push: jest.fn() }
+
+    const event = {
+      getData: () => ({
+        middlewareStack,
+      })
+    }
+
+    handler(event as any)
+
+    expect(middlewareStack.push).toBeCalledTimes(2)
   })
 })

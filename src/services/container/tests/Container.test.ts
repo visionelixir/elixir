@@ -88,6 +88,22 @@ describe('Elixir Container', () => {
     }).toThrowError(ContainerError)
   })
 
+  it ('should resolve multiple services', () => {
+    const container = new ElixirContainer()
+
+    const a = { service: 'a' }
+    const b = { service: 'b' }
+
+    container.singleton('a', a).singleton('b', b)
+
+    const result = container.resolve('a', 'b')
+
+    expect(result).toMatchObject({
+      a,
+      b
+    })
+  })
+
   it ('should error if a service with the same name already exists', () => {
     const container = new ElixirContainer()
     const service = { a: 1, b: 2 }
