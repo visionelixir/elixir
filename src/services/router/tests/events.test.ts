@@ -1,6 +1,15 @@
 import { ElixirGlobalEvents } from '../../../vision/types'
 import { global } from '../events'
 
+jest.mock('../boot', () => ({
+  RouterInstance: {
+    getCore: () => ({
+      allowedMethods: () => async () => {},
+      routes: () => async () => {}
+    })
+  }
+}))
+
 /**
  * Mocks
  */

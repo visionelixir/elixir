@@ -1,5 +1,8 @@
-import { ElixirRouter } from '../Router'
 import register from '../register'
+
+jest.mock('../boot', () => ({
+  RouterInstance: {}
+}))
 
 const Container = {
   singleton: jest.fn()
@@ -16,6 +19,6 @@ describe('Router: register', () => {
     register(ctx)
 
     expect(Container.singleton).toBeCalledTimes(1)
-    expect(Container.singleton).toBeCalledWith('Router', expect.any(ElixirRouter))
+    expect(Container.singleton).toBeCalledWith('Router', { })
   })
 })

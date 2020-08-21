@@ -1,21 +1,19 @@
 import { ElixirLoader } from '../../utils/Loader'
-import { Context, VisionElixirEnvironment } from '../../vision/types'
+import { VisionElixirEnvironment } from '../../vision/types'
+import { Vision } from '../../vision/Vision'
 import { ElixirRouter } from './Router'
 import { Route, Router as IRouter } from './types'
 
-export const RouterInstance: ElixirRouter = new ElixirRouter()
+export let RouterInstance: ElixirRouter
 
-export default (ctx: Context): void => {
-  const {
-    Router,
-    Loader,
-  }: { Router: IRouter; Loader: ElixirLoader } = ctx.elixir.services(
-    'Router',
-    'Loader',
-  )
+export const global = (vision: Vision): void => {
+  RouterInstance = new ElixirRouter()
 
-  loadRoutes(Loader, ctx.elixir.config.services.routeFile, ctx)
-  attachRoutes(Router)
+  const routeFile = vision.getConfig(VisionElixirEnvironment.ELIXIR).services
+    .routeFile
+
+  loadRoutes(vision.getLoader(), routeFile, RouterInstance)
+  attachRoutes(RouterInstance)
 }
 
 /**
@@ -25,10 +23,10 @@ export default (ctx: Context): void => {
 const loadRoutes = (
   Loader: ElixirLoader,
   routeFile: string,
-  ctx: Context,
+  router: IRouter,
 ): void => {
   Loader.runAllServiceFileExports(routeFile, VisionElixirEnvironment.VISION, [
-    ctx,
+    router,
   ])
 }
 

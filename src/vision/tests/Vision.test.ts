@@ -1,8 +1,9 @@
 import { VisionError } from '../../services/errorHandler/VisionError'
 import { ElixirEmitter } from '../../services/events/Emitter'
 import { TEST_VISION_CONFIG } from '../../test/fixtures/vision/config'
-import { Vision } from '../Vision'
+import { ELIXIR_CONFIG } from '../config'
 import { Core, VisionElixirEnvironment } from '../types'
+import { Vision } from '../Vision'
 
 jest.mock('../../utils/Loader', require('../../utils/mocks/Loader').ElixirLoaderMock)
 jest.mock('../../services/logger/Logger', require('../../services/logger/mocks/Logger').LoggerMock)
@@ -63,6 +64,13 @@ describe('Vision: Vision', () => {
     const vision = new Vision(TEST_VISION_CONFIG)
 
     expect(vision.getConfig()).toBe(TEST_VISION_CONFIG)
+  })
+
+  it ('can return the config by scope', () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
+
+    expect(vision.getConfig(VisionElixirEnvironment.VISION)).toBe(TEST_VISION_CONFIG)
+    expect(vision.getConfig(VisionElixirEnvironment.ELIXIR)).toBe(ELIXIR_CONFIG)
   })
 
   it ('can return the emitter', () => {

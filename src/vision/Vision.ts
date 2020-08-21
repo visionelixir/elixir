@@ -12,6 +12,7 @@ import { ELIXIR_CONFIG } from './config'
 import { AppMiddleware } from './middleware'
 import {
   Core,
+  ElixirConf,
   ElixirGlobalEvents,
   VisionConfig,
   VisionElixirEnvironment,
@@ -19,7 +20,8 @@ import {
 
 export class Vision {
   protected core: Core
-  protected config: VisionConfig
+  protected visionConfig: VisionConfig
+  protected elixirConfig: ElixirConf = ELIXIR_CONFIG
   protected loader: ElixirLoader
   protected server: Server
   protected isServed: boolean
@@ -75,7 +77,7 @@ export class Vision {
    * Bootstraps the vision so it can be served
    */
   public create(config: VisionConfig): Vision {
-    this.config = config
+    this.visionConfig = config
     this.loader = new ElixirLoader(config)
 
     this.loadAppBoot().loadAppEvents().configureMiddleware()
@@ -95,7 +97,7 @@ export class Vision {
     )
 
     this.loader.runAllServiceFileExports(
-      this.config.services.bootFile,
+      this.visionConfig.services.bootFile,
       VisionElixirEnvironment.VISION,
       [this],
       'global',
@@ -118,7 +120,7 @@ export class Vision {
     )
 
     this.loader.runAllServiceFileExports(
-      this.config.services.eventFile,
+      this.visionConfig.services.eventFile,
       VisionElixirEnvironment.VISION,
       [this],
       'global',
@@ -132,7 +134,7 @@ export class Vision {
    */
   protected configureMiddleware(): Vision {
     const middlewareStack = [
-      AppMiddleware.setupContext(this.config),
+      AppMiddleware.setupContext(this.visionConfig),
       AppMiddleware.setupContainer(),
       AppMiddleware.setupLoader(this.loader),
       AppMiddleware.loadServices(),
@@ -167,8 +169,17 @@ export class Vision {
    * Get Config
    * Returns the vision config
    */
-  public getConfig(): VisionConfig {
-    return this.config
+  public getConfig(environment: VisionElixirEnvironment.VISION): VisionConfig
+  public getConfig(environment: VisionElixirEnvironment.ELIXIR): ElixirConf
+  public getConfig(): VisionConfig
+  public getConfig(
+    environment: VisionElixirEnvironment = VisionElixirEnvironment.VISION,
+  ): VisionConfig | ElixirConf {
+    if (environment === VisionElixirEnvironment.ELIXIR) {
+      return this.elixirConfig
+    }
+
+    return this.visionConfig
   }
 
   /**
@@ -200,7 +211,7 @@ export class Vision {
    */
   public async up(): Promise<Vision | false> {
     return new Promise((resolve) => {
-      if (!this.config) {
+      if (!this.visionConfig) {
         throw new VisionError('Please run create on your vision before serving')
       }
 
