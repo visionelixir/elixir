@@ -1,7 +1,15 @@
 import * as koa from 'koa'
 
+declare module 'koa' {
+  interface Request {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    body?: any
+    rawBody: string
+  }
+}
+
 export class Core extends koa {}
-export { Middleware, Next, Context, Request, Response } from 'koa'
+export { Middleware, Next, Request, Response, Context } from 'koa'
 
 export type AsyncVoid = Promise<void>
 

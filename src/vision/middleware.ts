@@ -43,6 +43,7 @@ export class AppMiddleware {
       )
 
       ctx.vision = {
+        ...ctx.vision,
         name: Loader.getConfig(VisionElixirEnvironment.VISION).name,
         instance: vision,
         data: {},

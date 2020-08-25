@@ -29,7 +29,9 @@ export class ErrorHandlerMiddleware {
         }
 
         if (!(error instanceof PayloadError)) {
-          error = new ElixirError(error.message, error)
+          const err = new ElixirError(error.message, error)
+          err.stack = error.stack
+          error = err
         }
 
         ctx.error = error
