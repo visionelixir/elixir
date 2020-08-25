@@ -199,7 +199,7 @@ describe('Error Middleware: Error handler', () => {
     await ErrorHandlerMiddleware['emitEvent'](
       {} as any,
       404,
-      new ElixirError('some error', 'some payload'),
+      null,
       ctx as any
     )
 
@@ -209,7 +209,7 @@ describe('Error Middleware: Error handler', () => {
       {
         data: {
           ctx,
-          error: new ElixirError('some error'),
+          error: null,
           status: 404,
           vision: {}
         },

@@ -16,6 +16,7 @@ export class ErrorHandlerMiddleware {
   public static errorHandler(): Middleware {
     const errorHandler = async (ctx: Context, next: Next): AsyncVoid => {
       try {
+        ctx.error = null
         await next()
       } catch (error) {
         const { status } = ctx
@@ -49,7 +50,7 @@ export class ErrorHandlerMiddleware {
   protected static async emitEvent(
     vision: Vision,
     status: number,
-    error: PayloadError,
+    error: PayloadError | null,
     ctx: Context,
   ): Promise<void> {
     const Emitter: IEmitter = ctx.elixir.services('Emitter')
