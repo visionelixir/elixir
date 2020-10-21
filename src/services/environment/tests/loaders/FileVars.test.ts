@@ -8,7 +8,7 @@ jest.mock('fs', () => ({
   readFileSync: jest.fn(() => `KEY=value
       
       KEY2=value 2
-       KEY3=value 3`)
+      KEY3=value 3`)
 }))
 
 const yargsMocked = mocked(yargsParser, true)
@@ -64,7 +64,7 @@ describe('Environment: FileVars', () => {
   })
 
   it('should load from the base directory if set in env', () => {
-    process.env.baseDirectory = 'fromEnv'
+    process.env.BASE_DIRECTORY = 'fromEnv'
 
     const result = FileVars.load()
 
@@ -76,7 +76,7 @@ describe('Environment: FileVars', () => {
       KEY3: 'value 3'
     })
 
-    delete process.env.baseDirectory
+    delete process.env.BASE_DIRECTORY
   })
 
   it('should load from the base directory if set in args', () => {

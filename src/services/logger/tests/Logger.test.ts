@@ -1,5 +1,5 @@
 import { ElixirLogger } from '../Logger'
-import { ETypeColors } from '../types'
+import { TypeColors, Types } from '../types'
 
 describe('Elixir Logger', () => {
   it('should instantiate', () => {
@@ -18,7 +18,7 @@ describe('Elixir Logger', () => {
 
     expect(result).toBe(logger)
     expect(logger['log']).toBeCalledTimes(1)
-    expect(logger['log']).toBeCalledWith(ETypeColors.INFO, message)
+    expect(logger['log']).toBeCalledWith(Types.INFO, TypeColors.INFO, message)
   })
 
   it ('should be able to log warn', () => {
@@ -31,7 +31,7 @@ describe('Elixir Logger', () => {
 
     expect(result).toBe(logger)
     expect(logger['log']).toBeCalledTimes(1)
-    expect(logger['log']).toBeCalledWith(ETypeColors.WARN, message)
+    expect(logger['log']).toBeCalledWith(Types.WARN, TypeColors.WARN, message)
   })
 
   it ('should be able to log error', () => {
@@ -44,7 +44,7 @@ describe('Elixir Logger', () => {
 
     expect(result).toBe(logger)
     expect(logger['log']).toBeCalledTimes(1)
-    expect(logger['log']).toBeCalledWith(ETypeColors.ERROR, message)
+    expect(logger['log']).toBeCalledWith(Types.ERROR, TypeColors.ERROR, message)
   })
 
   it ('should be able to log debug', () => {
@@ -57,7 +57,7 @@ describe('Elixir Logger', () => {
 
     expect(result).toBe(logger)
     expect(logger['log']).toBeCalledTimes(1)
-    expect(logger['log']).toBeCalledWith(ETypeColors.DEBUG, message)
+    expect(logger['log']).toBeCalledWith(Types.DEBUG, TypeColors.DEBUG, message)
   })
 
   it ('should log', () => {
@@ -66,7 +66,7 @@ describe('Elixir Logger', () => {
     console.info = jest.fn()
 
 
-    logger['log'](ETypeColors.DEBUG, message)
+    logger['log'](Types.INFO, TypeColors.DEBUG, message)
 
     expect(console.info).toBeCalledTimes(1)
   })
@@ -77,7 +77,7 @@ describe('Elixir Logger', () => {
     console.info = jest.fn()
 
 
-    logger['log'](ETypeColors.DEBUG, message)
+    logger['log'](Types.INFO, TypeColors.DEBUG, message)
 
     expect(console.info).toBeCalledTimes(3)
   })

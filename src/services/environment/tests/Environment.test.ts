@@ -1,3 +1,4 @@
+import { EnvironmentCasts } from '../../../../dist/services/environment/types'
 import { Environment } from '../Environment'
 
 describe('Environment', () => {
@@ -31,14 +32,14 @@ describe('Environment', () => {
     }
 
     const def: string | null = Environment.get('string')
-    const string: string | null = Environment.get('string', 'string')
-    const number: number | null = Environment.get('number', 'number')
-    const boolean: boolean | null = Environment.get('boolean', 'boolean')
-    const boolean2: boolean | null = Environment.get('boolean2', 'boolean')
-    const boolean3: boolean | null = Environment.get('boolean3', 'boolean')
-    const boolean4: boolean | null = Environment.get('boolean4', 'boolean')
-    const boolean5: boolean | null = Environment.get('boolean5', 'boolean')
-    const boolean6: boolean | null = Environment.get('boolean6', 'boolean')
+    const string: string | null = Environment.get('string', 'default', EnvironmentCasts.STRING)
+    const number: number | null = Environment.get('number', 123, EnvironmentCasts.NUMBER)
+    const boolean: boolean | null = Environment.get('boolean', false, EnvironmentCasts.BOOLEAN)
+    const boolean2: boolean | null = Environment.get('boolean2', false, EnvironmentCasts.BOOLEAN)
+    const boolean3: boolean | null = Environment.get('boolean3', false, EnvironmentCasts.BOOLEAN)
+    const boolean4: boolean | null = Environment.get('boolean4', false, EnvironmentCasts.BOOLEAN)
+    const boolean5: boolean | null = Environment.get('boolean5', false, EnvironmentCasts.BOOLEAN)
+    const boolean6: boolean | null = Environment.get('boolean6', false, EnvironmentCasts.BOOLEAN)
 
     expect(Environment.fetch).toBeCalledTimes(9)
     expect(def).toBe('567')
