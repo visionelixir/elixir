@@ -8,8 +8,8 @@ export class FileVars {
     let toLoad: string
     const vars: KeyValue = {}
 
-    if (process.env.baseDirectory) {
-      toLoad = process.env.baseDirectory
+    if (process.env.BASE_DIRECTORY) {
+      toLoad = process.env.BASE_DIRECTORY
     } else if (yargsParser(process.argv).baseDirectory) {
       toLoad = yargsParser(process.argv).baseDirectory
     } else {
@@ -19,13 +19,18 @@ export class FileVars {
       toLoad = pathParts.join('/')
     }
 
-    let loaded: string
+    // try load an environment scoped environment file
+    let loaded: string | null = FileVars.loadFile(
+      path.resolve(toLoad, `.${process.env.NODE_ENV}.environment`),
+    )
 
-    try {
-      loaded = fs.readFileSync(path.resolve(toLoad, '.environment')).toString()
-    } catch (e) {
-      // it's ok if we dont find one
-      return {}
+    // if no environment scoped file was found then try load the generic one
+    if (loaded === null) {
+      loaded = FileVars.loadFile(path.resolve(toLoad, `.environment`))
+    }
+
+    if (!loaded) {
+      return vars
     }
 
     loaded.split('\n').map((row) => {
@@ -39,5 +44,14 @@ export class FileVars {
     })
 
     return vars
+  }
+
+  public static loadFile(file: string): string | null {
+    try {
+      return fs.readFileSync(file).toString()
+    } catch (e) {
+      // it's ok if we dont find one
+      return null
+    }
   }
 }

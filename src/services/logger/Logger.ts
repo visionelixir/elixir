@@ -1,33 +1,38 @@
-import * as chalk from 'chalk'
-import { ETypeColors, Logger } from './types'
+import { Logger, LogType, TypeColors, Types } from './types'
+import { Console } from './types/Console'
+import { GCloud } from './types/GCloud'
 
 export class ElixirLogger implements Logger {
-  protected pad = true
+  protected logType: LogType
+
+  public constructor(logType: LogType = LogType.CONSOLE) {
+    this.logType = logType
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public info(...messages: any[]): ElixirLogger {
-    this.log(ETypeColors.INFO, ...messages)
+    this.log(Types.INFO, TypeColors.INFO, ...messages)
 
     return this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public warn(...messages: any[]): ElixirLogger {
-    this.log(ETypeColors.WARN, ...messages)
+    this.log(Types.WARN, TypeColors.WARN, ...messages)
 
     return this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public error(...messages: any[]): ElixirLogger {
-    this.log(ETypeColors.ERROR, ...messages)
+    this.log(Types.ERROR, TypeColors.ERROR, ...messages)
 
     return this
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public debug(...messages: any[]): ElixirLogger {
-    this.log(ETypeColors.DEBUG, ...messages)
+    this.log(Types.DEBUG, TypeColors.DEBUG, ...messages)
 
     return this
   }
@@ -40,38 +45,13 @@ export class ElixirLogger implements Logger {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected log(color: string, ...messages: any[]): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const print: any = []
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    messages.map((message: any) => {
-      let result
-
-      if (typeof message === 'object') {
-        result = JSON.stringify(message, null, 2)
-      } else {
-        result = message
-      }
-
-      result = result.replace(/\\n/g, `\n`)
-
-      if (typeof result === 'string' && result.split(`\n`).length > 1) {
-        result = result.split(`\n`)
-
-        result.map((r: string) => print.push(r))
-      } else {
-        print.push(result)
-      }
-    })
-
-    const stamp = chalk`{hex('${ETypeColors.STAMP}') [${this.getTimeStamp()}]} `
-
-    print.map((message: string, index: number) => {
-      const pad = index === 0 || !this.pad ? stamp : '                      '
-
-      // eslint-disable-next-line no-console
-      console.info(pad + chalk`{hex('${color}') ${message}}`)
-    })
+  protected log(type: Types, color: TypeColors, ...messages: any[]): void {
+    switch (this.logType) {
+      case LogType.CONSOLE:
+        Console(type, color, this.getTimeStamp(), ...messages)
+        break
+      case LogType.GCLOUD:
+        GCloud(type, color, this.getTimeStamp(), ...messages)
+    }
   }
 }
