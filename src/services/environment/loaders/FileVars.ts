@@ -53,6 +53,8 @@ export class FileVars {
       return fs.readFileSync(file).toString()
     } catch (e) {
       // eslint-disable-next-line no-console
+      console.error(e.message)
+      // eslint-disable-next-line no-console
       console.error(e)
       // it's ok if we dont find one
       return null
