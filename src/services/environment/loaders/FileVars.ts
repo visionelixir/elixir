@@ -48,6 +48,8 @@ export class FileVars {
 
   public static loadFile(file: string): string | null {
     try {
+      // eslint-disable-next-line no-console
+      console.info('loading file: ' + file)
       return fs.readFileSync(file).toString()
     } catch (e) {
       // eslint-disable-next-line no-console
