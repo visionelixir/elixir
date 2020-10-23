@@ -28,7 +28,16 @@ const mPool = {
 }
 
 jest.mock('pg', () => {
-  return { Pool: jest.fn(() => mPool) }
+  return {
+    Pool: jest.fn(() => mPool),
+    types: {
+      setTypeParser: jest.fn(),
+      builtins: {
+        TIMESTAMPTZ: null,
+        TIMESTAMP: null
+      }
+    }
+  }
 })
 
 const config = {
