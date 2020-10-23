@@ -1,4 +1,4 @@
-import { Pool } from 'pg'
+import { Pool, types } from 'pg'
 import * as _ from 'lodash'
 import { DatabaseConnectionConfig } from './types'
 import { KeyValue } from '../../vision/types'
@@ -14,8 +14,18 @@ export class Pg {
 
     if (config) {
       this.config = config
+      this.setup()
       this.connect(config)
     }
+  }
+
+  public setup(): void {
+    const parseFn = function (val: string | number | null) {
+      return val
+    }
+
+    types.setTypeParser(types.builtins.TIMESTAMPTZ, parseFn)
+    types.setTypeParser(types.builtins.TIMESTAMP, parseFn)
   }
 
   public connect = (config: DatabaseConnectionConfig): Pg => {
