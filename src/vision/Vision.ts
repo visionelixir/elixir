@@ -7,7 +7,7 @@ import { ElixirEmitter } from '../services/events/Emitter'
 import { ElixirEvent } from '../services/events/Event'
 import { Emitter } from '../services/events/types'
 import { ElixirLogger } from '../services/logger/Logger'
-import { Logger } from '../services/logger/types'
+import { Logger, LogType } from '../services/logger/types'
 import { ElixirLoader } from '../utils/Loader'
 import { ELIXIR_CONFIG } from './config'
 import { AppMiddleware } from './middleware'
@@ -37,7 +37,9 @@ export class Vision {
   constructor(config?: VisionConfig) {
     this.isServed = false
     this.core = new Core()
-    this.logger = new ElixirLogger()
+    this.logger = new ElixirLogger(
+      Environment.get('LOGGER_TYPE', LogType.CONSOLE) as LogType,
+    )
     this.emitter = new ElixirEmitter()
 
     if (config) {
@@ -66,10 +68,10 @@ export class Vision {
     this.isServed = true
 
     this.logger.info(
-      'Welcome to your vision',
+      'Welcome to your Vision',
       `Running app: ${name}`,
-      `In environment: ${environment}`,
-      `http://${host}:${port}`,
+      `Environment: ${environment}`,
+      `At: http://${host}:${port}`,
     )
 
     return this
