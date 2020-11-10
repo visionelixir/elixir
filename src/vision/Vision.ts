@@ -1,6 +1,7 @@
 import * as http from 'http'
 import { Server } from 'http'
 import { Middleware } from 'koa'
+import { Environment } from '../../dist/services/environment/Environment'
 import { VisionError } from '../services/errorHandler/VisionError'
 import { ElixirEmitter } from '../services/events/Emitter'
 import { ElixirEvent } from '../services/events/Event'
@@ -60,12 +61,14 @@ export class Vision {
    */
   protected served(): Vision {
     const { name, host, port } = this.getConfig()
+    const environment = Environment.get('ENVIRONMENT')
 
     this.isServed = true
 
     this.logger.info(
       'Welcome to your vision',
       `Running app: ${name}`,
+      `In environment: ${environment}`,
       `http://${host}:${port}`,
     )
 

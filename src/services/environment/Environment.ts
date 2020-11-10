@@ -1,4 +1,4 @@
-import { KeyValue } from '../../vision/types'
+import { AppEnvironment, KeyValue } from '../../vision/types'
 import { CommandVars } from './loaders/CommandVars'
 import { FileVars } from './loaders/FileVars'
 import { SystemVars } from './loaders/SystemVars'
@@ -89,6 +89,10 @@ export class Environment {
     this.vars[name] = value
 
     return this
+  }
+
+  public static which(): AppEnvironment {
+    return this.get('ENVIRONMENT', AppEnvironment.DEVELOPMENT) as AppEnvironment
   }
 
   public static fetch(): Environment {
