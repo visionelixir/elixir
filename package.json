@@ -15,7 +15,11 @@
     "typescript:watch": "tsc --watch",
     "build": "npm test && npm run lint && npm run typescript:build",
     "check": "npm run lint && tsc --noEmit",
-    "deploy": "npm run build && npm publish"
+    "deploy": "npm run build && npm publish",
+    "git:version:push": "git push --tags && git push origin master",
+    "git:version:patch": "npm version patch && npm run git:version:push",
+    "git:version:minor": "npm version minor && npm run git:version:push",
+    "git:version:major": "npm version major && npm run git:version:push"
   },
   "author": "Brent Honeybone",
   "license": "ISC",
