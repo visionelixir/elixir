@@ -24,6 +24,7 @@
   "author": "Brent Honeybone",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/logging": "^8.1.0",
     "chalk": "^4.1.0",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",

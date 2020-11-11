@@ -15,6 +15,7 @@ import {
   Core,
   ElixirConf,
   ElixirGlobalEvents,
+  KeyValue,
   VisionConfig,
   VisionElixirEnvironment,
 } from './types'
@@ -25,7 +26,7 @@ export class Vision {
   protected elixirConfig: ElixirConf = ELIXIR_CONFIG
   protected loader: ElixirLoader
   protected server: Server
-  protected isServed: boolean
+  protected isServed = false
   protected logger: Logger
   protected emitter: Emitter
 
@@ -35,13 +36,6 @@ export class Vision {
    * create on the vision automatically
    */
   constructor(config?: VisionConfig) {
-    this.isServed = false
-    this.core = new Core()
-    this.logger = new ElixirLogger(
-      Environment.get('LOGGER_TYPE', LogType.CONSOLE) as LogType,
-    )
-    this.emitter = new ElixirEmitter()
-
     if (config) {
       this.create(config)
     }
@@ -52,7 +46,10 @@ export class Vision {
    * Called when an error occurs serving the vision
    */
   protected errored(error: Error): Vision {
-    this.logger.error('Error serving application', error)
+    this.logger.error('App', 'Error serving application', {
+      error,
+      stack: error.stack,
+    })
 
     return this
   }
@@ -67,12 +64,11 @@ export class Vision {
 
     this.isServed = true
 
-    this.logger.info(
-      'Welcome to your Vision',
-      `Running app: ${name}`,
-      `Environment: ${environment}`,
-      `At: http://${host}:${port}`,
-    )
+    this.logger.info('App', 'Welcome to your Vision', {
+      'App name': name,
+      Environment: environment,
+      'Serving at': `http://${host}:${port}`,
+    })
 
     return this
   }
@@ -85,9 +81,37 @@ export class Vision {
     this.visionConfig = config
     this.loader = new ElixirLoader(config)
 
+    this.isServed = false
+    this.core = new Core()
+
+    this.logger = this.createLogger(this.loader)
+
+    this.emitter = new ElixirEmitter()
+
     this.loadAppBoot().loadAppEvents().configureMiddleware()
 
     return this
+  }
+
+  protected createLogger(loader: ElixirLoader): Logger {
+    const logType = Environment.get('LOGGER_TYPE', LogType.CONSOLE) as LogType
+    let config: KeyValue = {}
+
+    switch (logType) {
+      case LogType.GCLOUD:
+        config = loader.loadConfig(
+          VisionElixirEnvironment.VISION,
+          'googleCloud',
+        ) as KeyValue
+        break
+      case LogType.CONSOLE:
+        config = {}
+        break
+    }
+
+    const logger = new ElixirLogger(config, logType)
+
+    return logger
   }
 
   /**

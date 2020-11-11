@@ -1,46 +1,44 @@
-import { Types } from '../types'
+import { Entry, Log, Logging } from '@google-cloud/logging'
+import { LogEntry } from '@google-cloud/logging/build/src/entry'
+import { KeyValue } from '../../../vision/types'
+import { Severity, SeverityColors } from '../types'
 
-export const GCloud = (
-  type: Types,
-  _color: string,
-  _timestamp: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ...messages: any[]
-): void => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const print: any = []
+export class GCloud {
+  protected config: KeyValue
+  protected logging: Logging
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messages.map((message: any) => {
-    let result
-
-    if (typeof message === 'object') {
-      result = JSON.stringify(message, null, 2)
-    } else {
-      result = message
-    }
-
-    result = result.replace(/\\n/g, `\n`)
-
-    if (typeof result === 'string' && result.split(`\n`).length > 1) {
-      result = result.split(`\n`)
-
-      result.map((r: string) => print.push(r))
-    } else {
-      print.push(result)
-    }
-  })
-
-  let consoleMethod: (message: string) => void
-
-  // eslint-disable-next-line no-console
-  if (typeof console[type] !== 'undefined') {
-    // eslint-disable-next-line no-console
-    consoleMethod = console[type]
-  } else {
-    // eslint-disable-next-line no-console
-    consoleMethod = console.info
+  constructor(config: KeyValue) {
+    this.config = config
+    this.logging = new Logging({ projectId: this.config.projectId })
   }
 
-  consoleMethod(print.join('\n'))
+  public render(
+    name: string,
+    type: Severity,
+    _color: SeverityColors,
+    _timestamp: string,
+    message: string,
+    meta: KeyValue,
+  ): void {
+    // Selects the log to write to
+
+    // The metadata associated with the entry
+    const metadata: LogEntry = {
+      resource: this.config.logging.resource,
+      severity: (type as unknown) as string,
+      jsonPayload: meta,
+    }
+
+    const log: Log = this.logging.log(name)
+
+    // Prepares a log entry
+    const entry: Entry = log.entry(metadata, {
+      message,
+      meta,
+    })
+
+    log.write(entry).then(() => {
+      // log written
+    })
+  }
 }

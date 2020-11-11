@@ -35,7 +35,6 @@ export default (ctx: Context): void => {
       }),
     )
 
-    Logger.info('Request Data:')
-    Logger.debug(Collector.all())
+    Logger.info('App', 'Collector', Collector.all())
   })
 }

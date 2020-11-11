@@ -1,52 +1,46 @@
 import * as chalk from 'chalk'
-import { TypeColors, Types } from '../types'
+import { KeyValue } from '../../../vision/types'
+import { SeverityColors, Severity } from '../types'
 
-export const Console = (
-  type: Types,
-  color: string,
-  timestamp: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ...messages: any[]
-): void => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const print: any = []
+export class Console {
+  public render(
+    name: string,
+    type: Severity,
+    color: SeverityColors,
+    timestamp: string,
+    message: string,
+    meta: KeyValue,
+  ): void {
+    const severityName: string = Severity[type]
+    const stamp =
+      chalk.hex(SeverityColors.STAMP)(`[${timestamp}][${name}]`) +
+      chalk.hex(color)(`[${severityName}] `)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messages.map((message: any) => {
-    let result
+    const print: string[] = [message]
 
-    if (typeof message === 'object') {
-      result = JSON.stringify(message, null, 2)
+    const metaPrint: string = JSON.stringify(meta, null, 2).replace(
+      /\\n/g,
+      `\n`,
+    )
+
+    if (metaPrint.split(`\n`).length > 1) {
+      metaPrint.split(`\n`).map((r: string) => print.push(r))
     } else {
-      result = message
+      print.push(metaPrint)
     }
 
-    result = result.replace(/\\n/g, `\n`)
+    print.forEach((text: string, index: number) => {
+      let render = ''
 
-    if (typeof result === 'string' && result.split(`\n`).length > 1) {
-      result = result.split(`\n`)
+      if (index === 0) {
+        render = stamp + chalk.hex(color)(text)
+      } else {
+        const pad = ' '.repeat(`[${timestamp}][${name}]`.length)
+        render = chalk.hex(SeverityColors.STAMP)(`${pad}${text}`)
+      }
 
-      result.map((r: string) => print.push(r))
-    } else {
-      print.push(result)
-    }
-  })
-
-  const stamp = chalk`{hex('${TypeColors.STAMP}') [${timestamp}]} `
-
-  print.map((message: string, index: number) => {
-    const pad = index === 0 ? stamp : '                      '
-    let consoleMethod: (message: string) => void
-
-    // eslint-disable-next-line no-console
-    if (typeof console[type] !== 'undefined') {
       // eslint-disable-next-line no-console
-      consoleMethod = console[type]
-    } else {
-      // eslint-disable-next-line no-console
-      consoleMethod = console.info
-    }
-
-    consoleMethod(pad + chalk`{hex('${color}') ${message}}`)
-  })
+      console.log(render)
+    })
+  }
 }

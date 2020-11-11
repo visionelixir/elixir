@@ -77,12 +77,14 @@ export class ErrorHandlerMiddleware {
     const { type, name, message, payload } = error
     const Logger: ILogger = ctx.elixir.services('Logger')
 
-    Logger.error(`[${type}] ${name}: ${message}`)
-    Logger.info(`[${method}] ${url}`)
-
-    if (payload) {
-      Logger.debug(`Payload:\n${JSON.stringify(error.getPayload(), null, 2)}`)
-    }
-    Logger.debug(`Stack Trace:\n${error.stack}`)
+    Logger.critical('App', message, {
+      type,
+      name,
+      message,
+      payload,
+      stack: error.stack,
+      method,
+      url,
+    })
   }
 }
