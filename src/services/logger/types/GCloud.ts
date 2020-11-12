@@ -25,8 +25,13 @@ export class GCloud {
     // get the log to write to
     const log: Log = this.logging.log(name)
 
+    // eslint-disable-next-line no-console
     console.log('Latency', meta?.performance?.[0]?.['App:Response'])
-    console.log('Latency nanos', meta?.performance?.[0]?.['App:Response'] * 1000000)
+    // eslint-disable-next-line no-console
+    console.log(
+      'Latency nanos',
+      meta?.performance?.[0]?.['App:Response'] * 1000000,
+    )
 
     // check for the presence of logger gcloud metadata
     const httpMeta: IHttpRequest = {
