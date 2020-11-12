@@ -23,18 +23,41 @@ export default (ctx: Context): void => {
   // @todo this should be removed from here into the vision to be handled
   //  how the developer wants
   Emitter.on(ElixirEvents.RESPONSE_POST, async (event: ElixirEvent) => {
-    const { ctx } = event.getData()
-    const { method, url } = ctx.request
+    const { ctx }: { ctx: Context } = event.getData()
+    const { method, href, url, protocol, ip: remoteIp } = ctx.request
     const { status } = ctx.response
+    const requestSize = ctx.req.socket.bytesRead
+    const responseSize = ctx.res.getHeader('content-length')
+    const userAgent = ctx.request.get('User-Agent')
+    const cacheLookup = false
+    const cacheHit = false
+    const cacheValidatedWithOriginServer = false
+    const cacheFillBytes = 0
+    const referer = ctx.request.get('referrer')
 
     await Emitter.emit(
       ElixirEvents.APP_DATA,
       new ElixirEvent({
         collection: 'request',
-        payload: { method, url, status },
+        payload: {
+          method,
+          url,
+          href,
+          status,
+          requestSize,
+          responseSize,
+          userAgent,
+          cacheLookup,
+          cacheHit,
+          cacheValidatedWithOriginServer,
+          cacheFillBytes,
+          remoteIp,
+          referer,
+          protocol,
+        },
       }),
     )
 
-    Logger.info('App', 'Collector', Collector.all())
+    Logger.info('App', `Request Collections: ${url}`, Collector.all())
   })
 }

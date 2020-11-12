@@ -46,7 +46,7 @@ export class Vision {
    * Called when an error occurs serving the vision
    */
   protected errored(error: Error): Vision {
-    this.logger.error('App', 'Error serving application', {
+    this.logger.emergency('App', 'Error serving application', {
       error,
       stack: error.stack,
     })
@@ -64,7 +64,7 @@ export class Vision {
 
     this.isServed = true
 
-    this.logger.info('App', 'Welcome to your Vision', {
+    this.logger.notice('App', 'Welcome to your Vision', {
       'App name': name,
       Environment: environment,
       'Serving at': `http://${host}:${port}`,
@@ -168,7 +168,7 @@ export class Vision {
       AppMiddleware.setupLoader(this.loader),
       AppMiddleware.loadServices(),
       AppMiddleware.response(),
-      AppMiddleware.compress(),
+      // AppMiddleware.compress(),
       AppMiddleware.serveStatic(`${this.getConfig().baseDirectory}/public`),
       AppMiddleware.attachVars(this),
       AppMiddleware.bodyParser(),

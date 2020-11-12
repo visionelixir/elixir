@@ -94,17 +94,20 @@ export class AppMiddleware {
     const response: Middleware = async (ctx, next) => {
       const Emitter: IEmitter = ctx.elixir.services('Emitter')
 
+      // listen on the response finish event
+      ctx.res.on('finish', () => {
+        Emitter.emit(
+          ElixirEvents.RESPONSE_POST,
+          new ElixirEvent({ vision: ctx.vision, ctx }),
+        )
+      })
+
       Emitter.emit(
         ElixirEvents.RESPONSE_PRE,
         new ElixirEvent({ vision: ctx.vision, ctx }),
       )
 
       await next()
-
-      Emitter.emit(
-        ElixirEvents.RESPONSE_POST,
-        new ElixirEvent({ vision: ctx.vision, ctx }),
-      )
     }
 
     return response
