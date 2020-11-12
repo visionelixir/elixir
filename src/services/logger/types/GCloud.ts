@@ -4,6 +4,7 @@ import { LogEntry } from '@google-cloud/logging/build/src/entry'
 import { KeyValue } from '../../../vision/types'
 import { Severity, SeverityColors } from '../types'
 import IHttpRequest = google.logging.type.IHttpRequest
+import IDuration = google.protobuf.IDuration
 
 export class GCloud {
   protected config: KeyValue
@@ -25,20 +26,24 @@ export class GCloud {
     // get the log to write to
     const log: Log = this.logging.log(name)
 
-    // eslint-disable-next-line no-console
-    console.log('Latency', meta?.performance?.[0]?.['App:Response'])
-    // eslint-disable-next-line no-console
-    console.log(
-      'Latency nanos',
-      meta?.performance?.[0]?.['App:Response'] * 1000000,
-    )
+    let duration: IDuration | undefined
+    const durationMs = meta?.performance?.[0]?.['App:Response'] || null
+
+    if (durationMs) {
+      const durationNano = durationMs * 1000000
+
+      duration = {
+        seconds: Math.floor(durationNano / 1000000000),
+        nanos: durationNano % 1000000000,
+      }
+    } else {
+      duration = undefined
+    }
 
     // check for the presence of logger gcloud metadata
     const httpMeta: IHttpRequest = {
       cacheHit: false,
-      latency: {
-        nanos: meta?.performance?.[0]?.['App:Response'] * 1000000 || undefined,
-      },
+      latency: duration,
       status: meta?.request?.[0]?.status || undefined,
       requestMethod: meta?.request?.[0]?.method || undefined,
       requestUrl: meta?.request?.[0]?.url || undefined,
