@@ -93,7 +93,7 @@ export class Vision {
     return this
   }
 
-  protected createLogger(loader: ElixirLoader): Logger {
+  public createLogger(loader: ElixirLoader): Logger {
     const logType = Environment.get('LOGGER_TYPE', LogType.CONSOLE) as LogType
     let config: KeyValue = {}
 
@@ -109,7 +109,7 @@ export class Vision {
         break
     }
 
-    const logger = new ElixirLogger(config, logType)
+    const logger = new ElixirLogger(logType, config)
 
     return logger
   }

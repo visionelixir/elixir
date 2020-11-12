@@ -1,3 +1,4 @@
+import { LoggerMockObject } from '../../logger/mocks/Logger'
 import { ErrorHandlerMiddleware } from '../Middleware'
 import { PayloadError } from '../PayloadError'
 import { ElixirError } from '../ElixirError'
@@ -11,11 +12,7 @@ const Emitter = {
   emit: jest.fn(),
 }
 
-const Logger = {
-  error: jest.fn(),
-  info: jest.fn(),
-  debug: jest.fn(),
-}
+const Logger = LoggerMockObject
 
 const elixir = {
   services: jest.fn((...args) => {
@@ -149,9 +146,7 @@ describe('Error Middleware: Error handler', () => {
 
     ErrorHandlerMiddleware['log'](new PayloadError('my error', null), ctx as any)
 
-    expect(Logger.error).toBeCalledTimes(1)
-    expect(Logger.info).toBeCalledTimes(1)
-    expect(Logger.debug).toBeCalledTimes(1)
+    expect(Logger.critical).toBeCalledTimes(1)
   })
 
   it ('should log the error payload', () => {
@@ -163,9 +158,7 @@ describe('Error Middleware: Error handler', () => {
 
     ErrorHandlerMiddleware['log'](new PayloadError('my error', 'payload'), ctx as any)
 
-    expect(Logger.error).toBeCalledTimes(1)
-    expect(Logger.info).toBeCalledTimes(1)
-    expect(Logger.debug).toBeCalledTimes(2)
+    expect(Logger.critical).toBeCalledTimes(1)
   })
 
   it ('should emit the error event for error codes 4xx & 5xx', async () => {

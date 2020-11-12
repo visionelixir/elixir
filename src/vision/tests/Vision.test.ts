@@ -21,7 +21,6 @@ describe('Vision: Vision', () => {
 
     expect(vision).toBeInstanceOf(Vision)
     expect(vision.create).toBeCalledTimes(0)
-    expect(vision.getCore()).toBeInstanceOf(Core)
 
     Vision.prototype.create = visionCreateOriginal
   })
@@ -36,7 +35,6 @@ describe('Vision: Vision', () => {
 
     expect(vision).toBeInstanceOf(Vision)
     expect(vision.create).toBeCalledTimes(1)
-    expect(vision.getCore()).toBeInstanceOf(Core)
 
     Vision.prototype.create = visionCreateOriginal
   })
@@ -132,7 +130,7 @@ describe('Vision: Vision', () => {
   it ('logs if there is an error serving', async () => {
     const vision = new Vision(TEST_VISION_CONFIG)
 
-    const loggerSpy = jest.spyOn(vision['logger'], 'error')
+    const loggerSpy = jest.spyOn(vision['logger'], 'emergency')
 
     await vision.up()
 

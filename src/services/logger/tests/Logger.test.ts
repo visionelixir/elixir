@@ -1,84 +1,73 @@
 import { ElixirLogger } from '../Logger'
-import { TypeColors, Types } from '../types'
+import { LogType, Severity, SeverityColors } from '../types'
 
 describe('Elixir Logger', () => {
   it('should instantiate', () => {
-    const logger = new ElixirLogger()
+    const logger = new ElixirLogger(LogType.CONSOLE)
 
     expect(logger).toBeInstanceOf(ElixirLogger)
   })
 
   it ('should be able to log info', () => {
-    const logger = new ElixirLogger()
+    const logger = new ElixirLogger(LogType.CONSOLE)
     const message: string = 'message'
 
-    logger['log'] = jest.fn()
+    logger['render'] = jest.fn()
 
-    const result = logger.info(message)
+    const result = logger.info('name', message, {})
 
     expect(result).toBe(logger)
-    expect(logger['log']).toBeCalledTimes(1)
-    expect(logger['log']).toBeCalledWith(Types.INFO, TypeColors.INFO, message)
+    expect(logger['render']).toBeCalledTimes(1)
+    expect(logger['render']).toBeCalledWith('name', Severity.INFO, SeverityColors.LEVEL_200, message, {})
   })
 
   it ('should be able to log warn', () => {
-    const logger = new ElixirLogger()
+    const logger = new ElixirLogger(LogType.CONSOLE)
     const message = 'message'
 
-    logger['log'] = jest.fn()
+    logger['render'] = jest.fn()
 
-    const result = logger.warn(message)
+    const result = logger.warning('name', message, {})
 
     expect(result).toBe(logger)
-    expect(logger['log']).toBeCalledTimes(1)
-    expect(logger['log']).toBeCalledWith(Types.WARN, TypeColors.WARN, message)
+    expect(logger['render']).toBeCalledTimes(1)
+    expect(logger['render']).toBeCalledWith('name', Severity.WARNING, SeverityColors.LEVEL_400, message, {})
   })
 
   it ('should be able to log error', () => {
-    const logger = new ElixirLogger()
+    const logger = new ElixirLogger(LogType.CONSOLE)
     const message = 'message'
 
-    logger['log'] = jest.fn()
+    logger['render'] = jest.fn()
 
-    const result = logger.error(message)
+    const result = logger.error('name', message, {})
 
     expect(result).toBe(logger)
-    expect(logger['log']).toBeCalledTimes(1)
-    expect(logger['log']).toBeCalledWith(Types.ERROR, TypeColors.ERROR, message)
+    expect(logger['render']).toBeCalledTimes(1)
+    expect(logger['render']).toBeCalledWith('name', Severity.ERROR, SeverityColors.LEVEL_500, message, {})
   })
 
   it ('should be able to log debug', () => {
-    const logger = new ElixirLogger()
+    const logger = new ElixirLogger(LogType.CONSOLE)
     const message = 'message'
 
-    logger['log'] = jest.fn()
+    logger['render'] = jest.fn()
 
-    const result = logger.debug(message)
+    const result = logger.debug('name', message, {})
 
     expect(result).toBe(logger)
-    expect(logger['log']).toBeCalledTimes(1)
-    expect(logger['log']).toBeCalledWith(Types.DEBUG, TypeColors.DEBUG, message)
+    expect(logger['render']).toBeCalledTimes(1)
+    expect(logger['render']).toBeCalledWith('name', Severity.DEBUG, SeverityColors.LEVEL_100, message, {})
   })
 
-  it ('should log', () => {
-    const logger = new ElixirLogger()
+  it ('should render', () => {
+    const logger = new ElixirLogger(LogType.CONSOLE)
     const message = 'message'
-    console.info = jest.fn()
+    console.log = jest.fn()
 
 
-    logger['log'](Types.INFO, TypeColors.DEBUG, message)
+    logger['render']('name', Severity.INFO, SeverityColors.LEVEL_200, message, {})
 
-    expect(console.info).toBeCalledTimes(1)
-  })
-
-  it ('should pretty log an object', () => {
-    const logger = new ElixirLogger()
-    const message = { my: 'object' }
-    console.info = jest.fn()
-
-
-    logger['log'](Types.INFO, TypeColors.DEBUG, message)
-
-    expect(console.info).toBeCalledTimes(3)
+    expect(console.log).toBeCalledTimes(2)
   })
 })

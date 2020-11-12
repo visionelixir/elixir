@@ -174,7 +174,8 @@ describe('Vision: middleware', () => {
       vision: {},
       elixir: {
         services: jest.fn(() => Emitter)
-      }
+      },
+      res: { on: (_name: string, cb: () => {}) => cb(), },
     } as any
     const next = jest.fn()
 

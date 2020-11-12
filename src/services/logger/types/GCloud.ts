@@ -47,8 +47,6 @@ export class GCloud {
       userAgent: meta?.request?.[0]?.userAgent || undefined,
     }
 
-    console.log(httpMeta)
-
     // The metadata associated with the entry
     const metadata: LogEntry = {
       resource: this.config.logging.resource,

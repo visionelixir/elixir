@@ -33,5 +33,5 @@ export default (ctx: Context): void => {
       break
   }
 
-  Container.singleton('Logger', new ElixirLogger(config, loggerType))
+  Container.singleton('Logger', new ElixirLogger(loggerType, config))
 }

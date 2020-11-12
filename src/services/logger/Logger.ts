@@ -7,7 +7,10 @@ export class ElixirLogger implements Logger {
   protected logType: LogType
   protected logger: GCloud | Console
 
-  public constructor(config: KeyValue, logType: LogType = LogType.CONSOLE) {
+  public constructor(
+    logType: LogType = LogType.CONSOLE,
+    config: KeyValue = {},
+  ) {
     switch (logType) {
       case LogType.CONSOLE:
         this.logger = new Console()

@@ -5,9 +5,13 @@ const Container = {
   singleton: jest.fn()
 }
 
+const Loader = {
+  singleton: jest.fn()
+}
+
 const ctx = {
   elixir: {
-    services: () => Container
+    services: () => ({ Container, Loader })
   }
 } as any
 

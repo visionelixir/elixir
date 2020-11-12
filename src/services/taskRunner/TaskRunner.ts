@@ -1,5 +1,4 @@
 import { KeyValue, Next } from '../../vision/types'
-import { Vision } from '../../vision/Vision'
 import { ElixirLogger } from '../logger/Logger'
 import { Logger, LogType } from '../logger/types'
 import { TaskMiddleware } from './types'
@@ -13,7 +12,7 @@ export class TaskRunner {
   constructor() {
     this.middleware = []
     this.context = {}
-    this.logger = new ElixirLogger((null as unknown) as Vision, LogType.CONSOLE)
+    this.logger = new ElixirLogger(LogType.CONSOLE, {})
   }
 
   public use(fn: (context: KeyValue, next: Next) => void): TaskRunner {

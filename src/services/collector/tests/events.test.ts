@@ -35,10 +35,19 @@ const ctx = {
   },
   request: {
     method: 'GET',
-    url: 'some/url'
+    url: 'some/url',
+    get: jest.fn((req) => req),
   },
   response: {
     status: 200
+  },
+  req: {
+    socket: {
+      bytesRead: 1,
+    }
+  },
+  res: {
+    getHeader: jest.fn(() => '1234'),
   }
 } as any
 
@@ -97,8 +106,6 @@ describe('Collector: Events', () => {
     expect(Emitter.emit).toBeCalledWith(ElixirEvents.APP_DATA, expect.any(ElixirEvent))
 
     expect(Logger.info).toBeCalledTimes(1)
-    expect(Logger.debug).toBeCalledTimes(1)
-
     expect(Collector.all).toBeCalledTimes(1)
   })
 })
