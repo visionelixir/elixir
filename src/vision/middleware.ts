@@ -17,20 +17,6 @@ import { Vision } from './Vision'
 import bodyParser = require('koa-bodyparser')
 
 export class AppMiddleware {
-  public static handle100Continue(): Middleware {
-    const handle100Continue: Middleware = async (ctx, next) => {
-      const header = ctx.request.get('Expect')
-
-      if (header === '100-continue') {
-        ctx.status = 100
-      } else {
-        await next()
-      }
-    }
-
-    return handle100Continue
-  }
-
   public static setupContext(config: VisionConfig): Middleware {
     const setupContext: Middleware = async (ctx, next) => {
       ctx.vision = {

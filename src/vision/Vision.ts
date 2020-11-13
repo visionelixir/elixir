@@ -169,7 +169,6 @@ export class Vision {
       AppMiddleware.loadServices(),
       AppMiddleware.response(),
       AppMiddleware.compress(),
-      AppMiddleware.handle100Continue(),
       AppMiddleware.serveStatic(`${this.getConfig().baseDirectory}/public`),
       AppMiddleware.attachVars(this),
       AppMiddleware.bodyParser(),
