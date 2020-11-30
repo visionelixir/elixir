@@ -35,17 +35,25 @@ const loadRoutes = (
  * Adds the routes into the koa router
  */
 const attachRoutes = (router: IRouter): void => {
-  const core = router.getCore()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const core = router.getCore() as any
 
   router.getRoutes().map((route: Route) => {
     // duplicate the array
-    const args = route.getMiddleware().slice(0)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const args: any = route.getMiddleware().slice(0)
+
+    // stuff a no-next middleware at the end to patch a bug in koa router
+    // that matches multiple routes
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const done = async () => {}
+
+    args.push(done)
+
     // add the path
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     args.unshift(route.getPath())
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+
     core[route.getMethod()](...args)
   })
 }
