@@ -165,4 +165,12 @@ describe('Pg', () => {
       l(new Error('something went wrong'))
     }).toThrow(DatabaseError)
   })
+
+  it ('can parse the date', () => {
+    const pg = new Pg('name', config)
+
+    const result = pg['parseDate']('hello')
+
+    expect(result).toBe('hello')
+  })
 })

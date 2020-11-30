@@ -20,12 +20,14 @@ export class Pg {
   }
 
   public setup(): void {
-    const parseFn = function (val: string | number | null) {
-      return val
-    }
+    const timestampTypes = [
+      types.builtins.TIMESTAMPTZ,
+      types.builtins.TIMESTAMP,
+    ]
 
-    types.setTypeParser(types.builtins.TIMESTAMPTZ, parseFn)
-    types.setTypeParser(types.builtins.TIMESTAMP, parseFn)
+    timestampTypes.map((t) => {
+      types.setTypeParser(t, this.parseDate)
+    })
   }
 
   public connect = (config: DatabaseConnectionConfig): Pg => {
@@ -40,6 +42,13 @@ export class Pg {
     })
 
     return this
+  }
+
+  protected parseDate(val: string): string
+  protected parseDate(val: number): number
+  protected parseDate(val: null): null
+  protected parseDate(val: string | number | null): string | number | null {
+    return val
   }
 
   public disconnect = async (): Promise<Pg> => {

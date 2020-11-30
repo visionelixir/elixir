@@ -1,5 +1,6 @@
-import { EnvironmentCasts } from '../../../../dist/services/environment/types'
+import { KeyValue } from '../../../vision/types'
 import { Environment } from '../Environment'
+import { EnvironmentCasts } from '../types'
 
 describe('Environment', () => {
   it('should get', () => {
@@ -28,7 +29,8 @@ describe('Environment', () => {
       boolean4: '1',
       boolean5: 0,
       boolean6: 1,
-      number: '123'
+      number: '123',
+      json: JSON.stringify({ hello: 'hi' }),
     }
 
     const def: string | null = Environment.get('string')
@@ -40,8 +42,9 @@ describe('Environment', () => {
     const boolean4: boolean | null = Environment.get('boolean4', false, EnvironmentCasts.BOOLEAN)
     const boolean5: boolean | null = Environment.get('boolean5', false, EnvironmentCasts.BOOLEAN)
     const boolean6: boolean | null = Environment.get('boolean6', false, EnvironmentCasts.BOOLEAN)
+    const json: KeyValue = Environment.get('json', { hello: 'bye' }, EnvironmentCasts.JSON)
 
-    expect(Environment.fetch).toBeCalledTimes(9)
+    expect(Environment.fetch).toBeCalledTimes(10)
     expect(def).toBe('567')
     expect(string).toBe('567')
     expect(number).toBe(123)
@@ -51,7 +54,7 @@ describe('Environment', () => {
     expect(boolean4).toBe(true)
     expect(boolean5).toBe(false)
     expect(boolean6).toBe(true)
-
+    expect(json).toMatchObject({ hello: 'hi' })
 
     Environment.fetch = original as any
   })

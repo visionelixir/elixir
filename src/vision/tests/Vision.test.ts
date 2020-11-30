@@ -1,5 +1,8 @@
+import { Environment } from '../../services/environment/Environment'
 import { VisionError } from '../../services/errorHandler/VisionError'
 import { ElixirEmitter } from '../../services/events/Emitter'
+import { LoggerMockObject } from '../../services/logger/mocks/Logger'
+import { LogType } from '../../services/logger/types'
 import { TEST_VISION_CONFIG } from '../../test/fixtures/vision/config'
 import { ELIXIR_CONFIG } from '../config'
 import { Core, VisionElixirEnvironment } from '../types'
@@ -139,6 +142,16 @@ describe('Vision: Vision', () => {
     expect(loggerSpy).toBeCalledTimes(1)
 
     await vision.down()
+  })
+
+  it ('can create a logger', () => {
+    const vision = new Vision(TEST_VISION_CONFIG)
+
+    Environment.set('LOGGER_TYPE', LogType.GCLOUD)
+
+    const logger = vision.createLogger(vision.getLoader())
+
+    expect(logger).toBe(LoggerMockObject)
   })
 
 })
