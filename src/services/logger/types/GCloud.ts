@@ -65,6 +65,7 @@ export class GCloud {
       resource: this.config.logging.resource,
       severity: (type as unknown) as string,
       httpRequest: httpMeta,
+      labels: meta?.labels || undefined,
     }
 
     // Prepares a log entry
