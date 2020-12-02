@@ -41,3 +41,16 @@ export enum LogType {
   CONSOLE = 'console',
   GCLOUD = 'gcloud',
 }
+
+export interface GoogleCloudLoggingConfig {
+  projectId: string
+  logging: {
+    resource: {
+      type: string
+      labels?: {
+        module_id?: string
+        function_name?: string
+      }
+    }
+  }
+}

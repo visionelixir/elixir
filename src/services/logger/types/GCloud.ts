@@ -2,7 +2,7 @@ import { Entry, Log, Logging } from '@google-cloud/logging'
 import { google } from '@google-cloud/logging/build/protos/protos'
 import { LogEntry } from '@google-cloud/logging/build/src/entry'
 import { KeyValue } from '../../../vision/types'
-import { Severity, SeverityColors } from '../types'
+import { GoogleCloudLoggingConfig, Severity, SeverityColors } from '../types'
 import IHttpRequest = google.logging.type.IHttpRequest
 import IDuration = google.protobuf.IDuration
 
@@ -10,7 +10,7 @@ export class GCloud {
   protected config: KeyValue
   protected logging: Logging
 
-  constructor(config: KeyValue) {
+  constructor(config: GoogleCloudLoggingConfig) {
     this.config = config
     this.logging = new Logging({ projectId: this.config.projectId })
   }

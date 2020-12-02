@@ -70,15 +70,3 @@ export interface VisionConfig {
   configDirectory: string
   services: ServicesConfig
 }
-
-export interface GoogleCloudLoggingConfig {
-  projectId: string
-  logging: {
-    resource: {
-      type: string
-      labels?: {
-        module_id?: string
-      }
-    }
-  }
-}
