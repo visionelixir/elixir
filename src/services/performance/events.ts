@@ -32,6 +32,8 @@ export default (ctx: Context): void => {
     const payload: KeyValue = {}
 
     benchmarks.map((mark: PerformanceMark) => {
+      // stop the performance mark if it's still running
+      mark.stop()
       payload[mark.getName()] = NumberUtil.round(mark.getDuration())
     })
 
