@@ -33,7 +33,10 @@ export default (ctx: Context): void => {
 
     benchmarks.map((mark: PerformanceMark) => {
       // stop the performance mark if it's still running
-      mark.stop()
+      if (mark.isRunning()) {
+        mark.stop()
+      }
+
       payload[mark.getName()] = NumberUtil.round(mark.getDuration())
     })
 

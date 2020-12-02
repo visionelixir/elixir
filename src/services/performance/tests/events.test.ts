@@ -92,6 +92,7 @@ describe('Performance: Events', () => {
         getName: () => 'name',
         getDuration: () => 12345678,
         stop: jest.fn(),
+        isRunning: jest.fn(),
       }
     ])
 
@@ -99,6 +100,7 @@ describe('Performance: Events', () => {
         getName: () => 'name',
         getDuration: () => 12345678,
         stop: jest.fn(),
+        isRunning: jest.fn(),
       }))
 
     events(ctx)
