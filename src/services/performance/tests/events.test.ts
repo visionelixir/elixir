@@ -90,13 +90,15 @@ describe('Performance: Events', () => {
     Performance.allArray.mockImplementationOnce(() => [
       {
         getName: () => 'name',
-        getDuration: () => 12345678
+        getDuration: () => 12345678,
+        stop: jest.fn(),
       }
     ])
 
     Performance.get.mockImplementationOnce(() => ({
         getName: () => 'name',
-        getDuration: () => 12345678
+        getDuration: () => 12345678,
+        stop: jest.fn(),
       }))
 
     events(ctx)
