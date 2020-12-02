@@ -1,5 +1,11 @@
 import { KeyValue } from '../../vision/types'
-import { Logger, LogType, SeverityColors, Severity } from './types'
+import {
+  Logger,
+  LogType,
+  SeverityColors,
+  Severity,
+  GoogleCloudLoggingConfig,
+} from './types'
 import { Console } from './types/Console'
 import { GCloud } from './types/GCloud'
 
@@ -16,7 +22,7 @@ export class ElixirLogger implements Logger {
         this.logger = new Console()
         break
       case LogType.GCLOUD:
-        this.logger = new GCloud(config)
+        this.logger = new GCloud(config as GoogleCloudLoggingConfig)
         break
     }
   }
