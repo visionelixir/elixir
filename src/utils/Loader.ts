@@ -61,9 +61,15 @@ export class ElixirLoader {
 
       try {
         module = this.loadServiceAsset(environment, service, file)
-      } catch (_e) {
-        // if no file exists just skip the module
-        return false
+      } catch (e) {
+        // if no file exists then it's ok so skip it
+        if (e.code === 'MODULE_NOT_FOUND') {
+          return false
+        }
+
+        // otherwise if we receive an error in the actual file then
+        // throw the error
+        throw e
       }
 
       if (module[exportName]) {
