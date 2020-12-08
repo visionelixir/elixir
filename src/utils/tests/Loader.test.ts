@@ -49,7 +49,11 @@ describe('Loader', () => {
 
   it ('can run an export of a file across all services even if some dont have one', () => {
     const originalLoadAsset = loader.loadAsset
-    loader['loadAsset'] = jest.fn(() => { throw new Error() })
+    loader['loadAsset'] = jest.fn(() => {
+      const error = new Error() as any
+      error.code = 'MODULE_NOT_FOUND'
+      throw error
+    })
 
     loader.runAllServiceFileExports('file', VisionElixirEnvironment.ELIXIR)
 
