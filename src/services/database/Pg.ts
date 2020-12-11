@@ -59,7 +59,7 @@ export class Pg {
 
   public async query(
     query: string,
-    params?: Array<string | number>,
+    params?: Array<string | number | string[] | number[]>,
   ): Promise<KeyValue[]> {
     const { stack } = new Error()
     const client = await this.pool.connect()
