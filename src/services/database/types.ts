@@ -23,8 +23,8 @@ export interface DatabaseConnectionConfig {
   user: string
   password: string
   port: number
-  ssl: any
-  application_name: string
+  ssl?: any
+  application_name?: string
 }
 
 export const DEFAULT_CONNECTION = 'default'

@@ -2,7 +2,13 @@ import { PerformanceMark } from '../PerformanceMark'
 import { performance } from 'perf_hooks'
 import { PerformanceError } from '../PerformanceError'
 
-const performanceSpy = jest.spyOn(performance, 'now')
+Object.defineProperty(performance, 'now', {
+  value: performance.now,
+  configurable: true,
+  writable: true
+});
+
+const performanceSpy = jest.spyOn(performance as any, 'now')
 
 beforeEach(jest.clearAllMocks)
 
