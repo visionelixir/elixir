@@ -1,6 +1,6 @@
 {
   "name": "@visionelixir/elixir",
-  "version": "0.14.4",
+  "version": "0.14.5",
   "description": "VisionElixir Framework",
   "main": "dist/index.js",
   "repository": {
